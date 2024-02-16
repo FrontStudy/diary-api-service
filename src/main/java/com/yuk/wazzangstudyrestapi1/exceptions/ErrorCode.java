@@ -13,6 +13,7 @@ public enum ErrorCode {
     /* 400 BAD_REQUEST : 잘못된 요청 */
     INVALID_REFRESH_TOKEN(BAD_REQUEST, "리프레시 토큰이 유효하지 않습니다"),
     MISMATCH_REFRESH_TOKEN(BAD_REQUEST, "리프레시 토큰의 유저 정보가 일치하지 않습니다"),
+    EMPTY_LOGIN_CREDENTIALS(BAD_REQUEST, "로그인 아이디와 패스워드를 입력해주세요"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
@@ -25,6 +26,9 @@ public enum ErrorCode {
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
 
+    /* 500 Internal Server Error */
+    PERSISTENCE_ERROR(INTERNAL_SERVER_ERROR, "데이터베이스 작업 중 오류가 발생했습니다."),
+    UNKNOWN_ERROR(INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.")
     ;
 
     private final HttpStatus httpStatus;

@@ -23,11 +23,11 @@ public class MemberResponseDto {
     private String gender;
     private String email;
     private LocalDateTime withdrawalDate;
-    private boolean isActive;
+    private boolean active;
 
     public MemberResponseDto(Long id, String profilePicture, String nickname, String birthDate,
                              String name, String gender, String email, LocalDateTime withdrawalDate,
-                             boolean isActive) {
+                             boolean active) {
         this.id = id;
         this.profilePicture = profilePicture;
         this.nickname = nickname;
@@ -36,7 +36,7 @@ public class MemberResponseDto {
         this.gender = gender;
         this.email = email;
         this.withdrawalDate = withdrawalDate;
-        this.isActive = isActive;
+        this.active = active;
     }
 
     // 여기에 Member 엔티티를 MemberResponseDto로 변환하는 스태틱 메소드를 추가할 수 있습니다.

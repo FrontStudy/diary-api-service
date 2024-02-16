@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -27,6 +28,7 @@ public class Member extends BaseTimeEntity {
     @Column(length=512)
     private String passwd;
 
+    @Setter
     @Column(length=512)
     private String jtoken;
 
@@ -49,12 +51,12 @@ public class Member extends BaseTimeEntity {
     private LocalDateTime withdrawalDate;
 
     @Column(nullable = false)
-    private boolean isActive;
+    private boolean active;
 
     @Builder
     public Member(Long id, String passwd, String jtoken, String userrole, String profilePicture, String nickname, String birthDate,
                   String name, String gender, String email, LocalDateTime withdrawalDate,
-                  boolean isActive) {
+                  boolean active) {
         this.id = id;
         this.passwd = passwd;
         this.jtoken = jtoken;
@@ -66,12 +68,12 @@ public class Member extends BaseTimeEntity {
         this.gender = gender;
         this.email = email;
         this.withdrawalDate = withdrawalDate;
-        this.isActive = isActive;
+        this.active = active;
     }
 
-    public void update(String profilePicture, String nickname, boolean isActive) {
+    public void update(String profilePicture, String nickname, boolean active) {
         this.profilePicture = profilePicture;
         this.nickname = nickname;
-        this.isActive = isActive;
+        this.active = active;
     }
 }
