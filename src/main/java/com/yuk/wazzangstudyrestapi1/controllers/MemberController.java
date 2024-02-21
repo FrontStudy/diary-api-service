@@ -60,8 +60,6 @@ public class MemberController {
     public ResponseDto update(@PathVariable Long id, @RequestBody MemberUpdateRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        ResponseDto rtn = ResponseDto.builder().build();
-
         dto.setId(user.getUid());
 
         return ResponseDto.builder()
