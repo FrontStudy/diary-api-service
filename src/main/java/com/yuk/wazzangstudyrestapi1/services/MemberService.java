@@ -46,7 +46,7 @@ public class MemberService {
                     .birthDate(requestDto.getBirthDate())
                     .name(requestDto.getName())
                     .gender(requestDto.getGender())
-                    .active(requestDto.isActive())
+                    .active(requestDto.getActive())
                     .build();
 
             return memberRepository.save(member).getId();
@@ -113,9 +113,9 @@ public class MemberService {
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         member.update(
-                requestDto.getProfilePicture(),
-                requestDto.getNickname(),
-                requestDto.isActive()
+                requestDto.getProfilePicture() != null ? requestDto.getProfilePicture() : member.getProfilePicture(),
+                requestDto.getNickname() != null ? requestDto.getNickname() : member.getNickname(),
+                requestDto.getActive() != null ? requestDto.getActive() : member.getActive()
         );
 
         return id;

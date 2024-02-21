@@ -11,5 +11,5 @@ public class MemberUpdateRequestDto {
     private Long id;
     private String profilePicture;
     private String nickname;
-    private boolean isActive = true;
+    private Boolean active = true;
 }

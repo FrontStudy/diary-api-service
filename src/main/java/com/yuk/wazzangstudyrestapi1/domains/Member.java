@@ -51,12 +51,12 @@ public class Member extends BaseTimeEntity {
     private LocalDateTime withdrawalDate;
 
     @Column(nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @Builder
     public Member(Long id, String passwd, String jtoken, String userrole, String profilePicture, String nickname, String birthDate,
                   String name, String gender, String email, LocalDateTime withdrawalDate,
-                  boolean active) {
+                  Boolean active) {
         this.id = id;
         this.passwd = passwd;
         this.jtoken = jtoken;
@@ -71,7 +71,7 @@ public class Member extends BaseTimeEntity {
         this.active = active;
     }
 
-    public void update(String profilePicture, String nickname, boolean active) {
+    public void update(String profilePicture, String nickname, Boolean active) {
         this.profilePicture = profilePicture;
         this.nickname = nickname;
         this.active = active;

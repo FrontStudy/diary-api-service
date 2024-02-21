@@ -16,6 +16,6 @@ public class MemberRequestDto {
     private String gender;
     private String profilePicture;
     private String birthDate;
-    private boolean active = true;
+    private Boolean active = true;
 
 }
