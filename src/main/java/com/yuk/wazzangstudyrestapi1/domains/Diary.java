@@ -40,12 +40,20 @@ public class Diary extends BaseTimeEntity {
 
     @Column(nullable = false)
     @Builder.Default
-    private boolean active = true;
+    private Boolean active = true;
 
     @Builder
-    public Diary(Long id, Long memberId, String title, String content, Long imgid, String accessLevel, boolean active) {
+    public Diary(Long id, Long memberId, String title, String content, Long imgid, String accessLevel, Boolean active) {
         this.id = id;
         this.memberId = memberId;
+        this.title = title;
+        this.content = content;
+        this.imgid = imgid;
+        this.accessLevel = accessLevel;
+        this.active = active;
+    }
+
+    public void update(String title, String content, Long imgid, String accessLevel, Boolean active) {
         this.title = title;
         this.content = content;
         this.imgid = imgid;
