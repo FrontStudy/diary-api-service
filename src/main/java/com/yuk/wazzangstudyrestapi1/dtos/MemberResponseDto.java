@@ -50,7 +50,7 @@ public class MemberResponseDto {
                 member.getGender(),
                 member.getEmail(),
                 member.getWithdrawalDate(),
-                member.isActive()
+                member.getActive()
         );
     }
 }
