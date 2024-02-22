@@ -76,4 +76,8 @@ public class Member extends BaseTimeEntity {
         this.nickname = nickname;
         this.active = active;
     }
+
+    public void setAdminRole() {
+        this.userrole = "ROLE_ADMIN";
+    }
 }

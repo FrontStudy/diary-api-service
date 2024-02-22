@@ -137,4 +137,12 @@ public class MemberService {
     public boolean existsByEmail (String email) {
         return memberRepository.existsByEmail(email);
     }
+
+    @Transactional
+    public Long setAdminRole (Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 멤버가 없습니다. id= " + id));
+        member.setAdminRole();
+        return id;
+    }
 }

@@ -6,7 +6,6 @@ import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.security.SecurityUserDetail;
 import com.yuk.wazzangstudyrestapi1.services.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +60,7 @@ public class MemberController {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         dto.setId(user.getUid());
+        System.out.println("user id : "+user.getUid());
 
         return ResponseDto.builder()
                 .status("success")
@@ -74,6 +74,28 @@ public class MemberController {
         return ResponseDto.builder()
                 .status("success")
                 .data(memberService.findAllMembers())
+                .build();
+    }
+
+    @CrossOrigin
+    @PutMapping("/svc/setAdminRole")
+    public ResponseDto setAdminRole () {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseDto.builder()
+                .status("success")
+                .data(memberService.setAdminRole(user.getUid()))
+                .build();
+    }
+
+
+    @CrossOrigin
+    @PostMapping("/admin/memberList")
+    public ResponseDto getMemberList (@RequestBody RequestMemberListDto dto) {
+        System.out.println("MemberController.getMemberList");
+        System.out.println(dto.toString());
+        return ResponseDto.builder()
+                .status("success")
+                .data(true)
                 .build();
     }
 
