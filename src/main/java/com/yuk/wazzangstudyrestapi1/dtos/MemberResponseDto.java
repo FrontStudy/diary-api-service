@@ -24,10 +24,12 @@ public class MemberResponseDto {
     private String email;
     private LocalDateTime withdrawalDate;
     private boolean active;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 
     public MemberResponseDto(Long id, String profilePicture, String nickname, String birthDate,
                              String name, String gender, String email, LocalDateTime withdrawalDate,
-                             boolean active) {
+                             boolean active, LocalDateTime createTime, LocalDateTime updateTime) {
         this.id = id;
         this.profilePicture = profilePicture;
         this.nickname = nickname;
@@ -37,6 +39,8 @@ public class MemberResponseDto {
         this.email = email;
         this.withdrawalDate = withdrawalDate;
         this.active = active;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     // 여기에 Member 엔티티를 MemberResponseDto로 변환하는 스태틱 메소드를 추가할 수 있습니다.
@@ -50,7 +54,9 @@ public class MemberResponseDto {
                 member.getGender(),
                 member.getEmail(),
                 member.getWithdrawalDate(),
-                member.getActive()
+                member.getActive(),
+                member.getCreatedDate(),
+                member.getModifiedDate()
         );
     }
 }
