@@ -85,9 +85,11 @@ public class MemberController {
 
     @CrossOrigin
     @GetMapping("/pub/check-email")
-    public ResponseEntity<Boolean> checkEmailDuplicate(@RequestParam String email) {
+    public ResponseDto checkEmailDuplicate(@RequestParam(name = "email") String email) {
         boolean exists = memberService.existsByEmail(email);
-        return ResponseEntity.ok(!exists);
+        return ResponseDto.builder()
+                .status("success")
+                .data(exists)
+                .build();
     }
-
 }
