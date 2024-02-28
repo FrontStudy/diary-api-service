@@ -5,12 +5,17 @@ import com.yuk.wazzangstudyrestapi1.dtos.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.repositorys.MemberRepository;
+import com.yuk.wazzangstudyrestapi1.repositorys.MemberSpecifications;
 import com.yuk.wazzangstudyrestapi1.security.SecurityUserDetail;
 import com.yuk.wazzangstudyrestapi1.utils.EncryptUtil;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -145,4 +151,18 @@ public class MemberService {
         member.setAdminRole();
         return id;
     }
+
+    public List<MemberResponseDto> findWithSearchConditions (RequestMemberListDto dto, PageInfoDto pageDto) {
+        Specification<Member> spec = MemberSpecifications.withRequestMemberListDto(dto);
+        Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+        Page<Member> page = memberRepository.findAll(spec, pageable);
+
+        pageDto.setTotalPages((long) page.getTotalPages());
+        pageDto.setTotalElements(page.getTotalElements());
+
+        return page.getContent().stream()
+                .map(MemberResponseDto::from)
+                .collect(Collectors.toList());
+   }
+
 }

@@ -20,8 +20,5 @@ public class RequestMemberListDto {
     private String birthDate;
     private String name;
     private String gender;
-    private LocalDateTime withdrawalDate;
     private Boolean active;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
 }

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
@@ -93,9 +95,15 @@ public class MemberController {
     public ResponseDto getMemberList (@RequestBody RequestMemberListDto dto) {
         System.out.println("MemberController.getMemberList");
         System.out.println(dto.toString());
+
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        List<MemberResponseDto> resDtoList = memberService.findWithSearchConditions(dto, pageInfo);
+
         return ResponseDto.builder()
                 .status("success")
-                .data(true)
+                .data(resDtoList)
+                .page(pageInfo)
                 .build();
     }
 
