@@ -2,6 +2,7 @@ package com.yuk.wazzangstudyrestapi1.services;
 
 import com.yuk.wazzangstudyrestapi1.domains.Member;
 import com.yuk.wazzangstudyrestapi1.dtos.*;
+import com.yuk.wazzangstudyrestapi1.dtos.member.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.repositorys.MemberRepository;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

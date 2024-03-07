@@ -1,6 +1,7 @@
 package com.yuk.wazzangstudyrestapi1.controllers;
 
 import com.yuk.wazzangstudyrestapi1.dtos.*;
+import com.yuk.wazzangstudyrestapi1.dtos.member.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.security.SecurityUserDetail;

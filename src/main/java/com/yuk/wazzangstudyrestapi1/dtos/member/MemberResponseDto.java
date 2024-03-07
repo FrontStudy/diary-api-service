@@ -1,4 +1,4 @@
-package com.yuk.wazzangstudyrestapi1.dtos;
+package com.yuk.wazzangstudyrestapi1.dtos.member;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yuk.wazzangstudyrestapi1.domains.Member;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

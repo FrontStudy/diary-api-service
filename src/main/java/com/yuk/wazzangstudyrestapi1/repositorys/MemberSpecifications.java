@@ -1,9 +1,8 @@
 package com.yuk.wazzangstudyrestapi1.repositorys;
 
 import com.yuk.wazzangstudyrestapi1.domains.Member;
-import com.yuk.wazzangstudyrestapi1.dtos.RequestMemberListDto;
+import com.yuk.wazzangstudyrestapi1.dtos.member.RequestMemberListDto;
 import org.springframework.data.jpa.domain.Specification;
-import java.time.LocalDateTime;
 
 public class MemberSpecifications {
 

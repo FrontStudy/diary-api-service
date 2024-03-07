@@ -1,4 +1,4 @@
-package com.yuk.wazzangstudyrestapi1.dtos;
+package com.yuk.wazzangstudyrestapi1.dtos.member;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

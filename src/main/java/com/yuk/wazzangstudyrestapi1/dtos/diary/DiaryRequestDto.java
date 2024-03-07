@@ -1,4 +1,4 @@
-package com.yuk.wazzangstudyrestapi1.dtos;
+package com.yuk.wazzangstudyrestapi1.dtos.diary;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
