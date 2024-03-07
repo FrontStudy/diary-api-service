@@ -123,4 +123,15 @@ public class MemberController {
                 .data(exists)
                 .build();
     }
+
+    @CrossOrigin
+    @GetMapping("/pub/check-nickname")
+    public ResponseDto checkNicknameDuplicate(@RequestParam(name = "nickname") String nickname) {
+        boolean exists = memberService.existsByNickname(nickname);
+        return ResponseDto.builder()
+                .status("success")
+                .data(exists)
+                .build();
+    }
+
 }

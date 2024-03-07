@@ -144,6 +144,8 @@ public class MemberService {
         return memberRepository.existsByEmail(email);
     }
 
+    public boolean existsByNickname (String nickname) { return memberRepository.existsByNickname(nickname); }
+
     @Transactional
     public Long setAdminRole (Long id) {
         Member member = memberRepository.findById(id)

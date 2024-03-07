@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecificationExecutor<Member> {
     boolean existsByEmail(String email);
+    boolean existsByNickname(String nickname);
 
     Optional<Member> findByEmailAndPasswd (String email, String passwd);
 
