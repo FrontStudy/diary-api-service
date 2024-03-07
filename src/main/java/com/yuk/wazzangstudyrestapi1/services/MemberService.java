@@ -13,6 +13,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,7 +57,7 @@ public class MemberService {
                     .build();
 
             return memberRepository.save(member).getId();
-        } catch (EntityExistsException | ConstraintViolationException e) {
+        } catch (EntityExistsException | ConstraintViolationException | DataIntegrityViolationException e) {
             throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         } catch (PersistenceException e) {
             throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
