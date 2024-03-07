@@ -1,8 +1,9 @@
 package com.yuk.wazzangstudyrestapi1.controllers;
 
-import com.yuk.wazzangstudyrestapi1.dtos.DiaryRequestDto;
-import com.yuk.wazzangstudyrestapi1.dtos.DiaryUpdateRequestDto;
-import com.yuk.wazzangstudyrestapi1.dtos.MemberUpdateRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryListRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryUpdateRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.ResponseDto;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
@@ -41,6 +42,19 @@ public class DiaryController {
         return ResponseDto.builder()
                 .status("success")
                 .data(diaryService.update(diaryId, user.getUid(), dto))
+                .build();
+    }
+
+    @CrossOrigin
+    @PostMapping("/svc/diaryList")
+    public ResponseDto getDiaryListByMemberId(@RequestBody DiaryListRequestDto dto) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getListByMemberId(user.getUid(), dto, pageInfo))
+                .page(pageInfo)
                 .build();
     }
 }

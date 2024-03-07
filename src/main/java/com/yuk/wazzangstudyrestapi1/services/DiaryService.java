@@ -1,8 +1,12 @@
 package com.yuk.wazzangstudyrestapi1.services;
 
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
-import com.yuk.wazzangstudyrestapi1.dtos.DiaryRequestDto;
-import com.yuk.wazzangstudyrestapi1.dtos.DiaryUpdateRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryListRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryResponseDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryUpdateRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.member.MemberResponseDto;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryRepository;
@@ -10,10 +14,15 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +69,26 @@ public class DiaryService {
                 requestDto.getActive() != null ? requestDto.getActive() : diary.getActive()
         );
         return diaryId;
+    }
+
+    @Transactional
+    public List<DiaryResponseDto> getListByMemberId(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
+        try {
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            Page<Diary> page = diaryRepository.findAllByMemberId(memberId, pageable);
+
+            pageDto.setTotalPages((long) page.getTotalPages());
+            pageDto.setTotalElements(page.getTotalElements());
+
+            return page.getContent().stream()
+                    .map(DiaryResponseDto::from)
+                    .collect(Collectors.toList());
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+
+
     }
 }
