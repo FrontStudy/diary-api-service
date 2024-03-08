@@ -15,6 +15,7 @@ public enum ErrorCode {
     MISMATCH_REFRESH_TOKEN(BAD_REQUEST, "리프레시 토큰의 유저 정보가 일치하지 않습니다"),
     EMPTY_LOGIN_CREDENTIALS(BAD_REQUEST, "로그인 아이디와 패스워드를 입력해주세요"),
     EMPTY_TITLE_OR_CONTENT(BAD_REQUEST, "게시글의 제목 또는 내용이 비어있습니다"),
+    EMPTY_DIARYSHARE_MEMBER(BAD_REQUEST, "공유할 멤버를 입력해주세요"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
