@@ -17,16 +17,14 @@ public class DiaryShare {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "diary_id", referencedColumnName = "id")
-    private Diary diary;
+    @Column(nullable = false)
+    private Long diaryId;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", referencedColumnName = "id")
-    private Member member;
+    @Column(nullable = false)
+    private Long memberId;
 
-    public DiaryShare(Diary diary, Member member) {
-        this.diary = diary;
-        this.member = member;
+    public DiaryShare(Long diaryId, Long memberId) {
+        this.diaryId = diaryId;
+        this.memberId = memberId;
     }
 }
