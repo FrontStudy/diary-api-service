@@ -21,6 +21,7 @@ public class DiaryShareService {
     private final DiaryShareRepository diaryShareRepository;
 
     public int addDiaryShares(Long diaryId, Long userId, List<Long> memberIds) {
+        System.out.println("DiaryShareService.addDiaryShares");
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
         if(!Objects.equals(diary.getMemberId(), userId)) {
