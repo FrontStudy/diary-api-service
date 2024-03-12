@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class DiaryShareController {
@@ -19,14 +17,40 @@ public class DiaryShareController {
     private final DiaryShareService diaryShareService;
 
     @CrossOrigin
-    @PostMapping("/svc/diary/{diaryId}/shares")
-    public ResponseDto addDiaryShare(@PathVariable Long diaryId, @RequestBody DiaryShareRequestDto dto) {
+    @PatchMapping("/svc/diary/{diaryId}/shares")
+    public ResponseDto updateDiaryShare(@PathVariable Long diaryId, @RequestBody DiaryShareRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = user.getUid();
 
         return ResponseDto.builder()
                 .status("success")
-                .data(diaryShareService.addDiaryShares(diaryId, userId, dto.getMemberIds()))
+                .data(diaryShareService.updateDiaryShares(diaryId, userId, dto.getMemberIds()))
+                .build();
+    }
+
+    @CrossOrigin
+    @GetMapping("/svc/diary/{diaryId}/shares")
+    public ResponseDto getMembersByDiary(@PathVariable Long diaryId) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = user.getUid();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryShareService.getMembersByDiaryId(userId, diaryId))
+                .build();
+    }
+
+    @CrossOrigin
+    @GetMapping("/svc/member/{memberId}/shares")
+    public ResponseDto getSharedDiariesByMember(@PathVariable Long memberId) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!memberId.equals(user.getUid())) {
+            throw new CustomException(ErrorCode.INVALID_AUTH_TOKEN);
+        }
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryShareService.getSharedDiariesByMemberId(memberId))
                 .build();
     }
 

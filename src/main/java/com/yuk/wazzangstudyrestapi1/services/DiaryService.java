@@ -6,7 +6,6 @@ import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryListRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryResponseDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryUpdateRequestDto;
-import com.yuk.wazzangstudyrestapi1.dtos.member.MemberResponseDto;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryRepository;
