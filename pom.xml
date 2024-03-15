@@ -52,12 +52,13 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws -->
+        <!-- https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-starter-aws -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
+            <groupId>io.awspring.cloud</groupId>
             <artifactId>spring-cloud-starter-aws</artifactId>
-            <version>2.2.6.RELEASE</version>
+            <version>2.4.4</version>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

@@ -16,6 +16,7 @@ public enum ErrorCode {
     EMPTY_LOGIN_CREDENTIALS(BAD_REQUEST, "로그인 아이디와 패스워드를 입력해주세요"),
     EMPTY_TITLE_OR_CONTENT(BAD_REQUEST, "게시글의 제목 또는 내용이 비어있습니다"),
     EMPTY_DIARYSHARE_MEMBER(BAD_REQUEST, "공유할 멤버를 입력해주세요"),
+    EMPTY_REQUEST(BAD_REQUEST, "요청 파라미터가 비었습니다."),
     SHARE_DIARY_MYSELF(BAD_REQUEST, "자신에게 일기를 공유할 수 없습니다"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
