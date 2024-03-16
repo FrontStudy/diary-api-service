@@ -42,13 +42,13 @@ public class FileController {
     }
 
     @CrossOrigin
-    @PostMapping(value="/svc/getImages")
-    public ResponseDto getImages(@RequestBody ImageInfoRequestDto dto) {
+    @GetMapping(value="/svc/getImages")
+    public ResponseDto getImages(@RequestParam String fileName) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if(dto.getImgs() == null || dto.getImgs().isEmpty()) throw new CustomException(ErrorCode.EMPTY_REQUEST);
+        if(fileName == null || fileName.isEmpty()) throw new CustomException(ErrorCode.EMPTY_REQUEST);
 
-        ArrayList<ImageInfoResponseDto> result = fileService.getImages(dto.getImgs());
+        ArrayList<ImageInfoResponseDto> result = fileService.getImages(fileName);
 
         if(!result.isEmpty()) {
             return ResponseDto.builder()
@@ -64,11 +64,11 @@ public class FileController {
     }
 
     @CrossOrigin
-    @PostMapping(value="/pub/getImages")
-    public ResponseDto getImagesPub(@RequestBody ImageInfoRequestDto dto) {
-        if(dto.getImgs() == null || dto.getImgs().isEmpty()) throw new CustomException(ErrorCode.EMPTY_REQUEST);
+    @GetMapping(value="/pub/getImages")
+    public ResponseDto getImagesPub(@RequestParam String fileName) {
+        if(fileName == null || fileName.isEmpty()) throw new CustomException(ErrorCode.EMPTY_REQUEST);
 
-        ArrayList<ImageInfoResponseDto> result = fileService.getImages(dto.getImgs());
+        ArrayList<ImageInfoResponseDto> result = fileService.getImages(fileName);
 
         if(!result.isEmpty()) {
             return ResponseDto.builder()
