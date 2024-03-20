@@ -37,7 +37,7 @@ public class Member extends BaseTimeEntity {
 
     private String profilePicture;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nickname;
 
     private String birthDate;
