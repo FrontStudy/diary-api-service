@@ -61,8 +61,6 @@ public class MemberController {
     @PutMapping("/svc/members/{id}")
     public ResponseDto update(@PathVariable Long id, @RequestBody MemberUpdateRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        dto.setId(user.getUid());
         System.out.println("user id : "+user.getUid());
 
         return ResponseDto.builder()
