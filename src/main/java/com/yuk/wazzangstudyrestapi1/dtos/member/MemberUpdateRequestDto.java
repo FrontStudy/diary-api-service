@@ -8,8 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MemberUpdateRequestDto {
-    private Long id;
     private String profilePicture;
     private String nickname;
-    private Boolean active;
 }
