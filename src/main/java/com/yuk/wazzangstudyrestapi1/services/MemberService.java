@@ -127,6 +127,18 @@ public class MemberService {
         return id;
     }
 
+    @Transactional
+    public Long updateByAdmin(Long id, MemberUpdateAdminRequestDto requestDto) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        member.updateByAdmin(
+                requestDto.getProfilePicture() != null ? requestDto.getProfilePicture() : member.getProfilePicture(),
+                requestDto.getNickname() != null ? requestDto.getNickname() : member.getNickname(),
+                requestDto.getUserrole() != null ? requestDto.getUserrole() : member.getUserrole()
+        );
+        return id;
+    }
+
     public List<MemberResponseDto> findAllMembers () {
         List<Member> members = memberRepository.findAll();
         return members.stream()

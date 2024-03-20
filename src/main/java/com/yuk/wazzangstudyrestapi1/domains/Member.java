@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
@@ -74,6 +75,16 @@ public class Member extends BaseTimeEntity {
     public void update(String profilePicture, String nickname) {
         this.profilePicture = profilePicture;
         this.nickname = nickname;
+    }
+
+    public void updateByAdmin(String profilePicture, String nickname, String userrole) {
+        this.profilePicture = profilePicture;
+        this.nickname = nickname;
+        if(Objects.equals(userrole, "ROLE_USER")) {
+            this.userrole = userrole;
+        } else if (Objects.equals(userrole, "ROLE_ADMIN")) {
+            this.userrole = userrole;
+        }
     }
 
     public void setAdminRole() {

@@ -70,6 +70,19 @@ public class MemberController {
     }
 
     @CrossOrigin
+    @PutMapping("/admin/members/{id}")
+    public ResponseDto updateByAdmin(@PathVariable Long id, @RequestBody MemberUpdateAdminRequestDto dto) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        System.out.println("user id : "+user.getUid());
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(memberService.updateByAdmin(id, dto))
+                .build();
+    }
+
+    @CrossOrigin
     @GetMapping("/pub/members")
     public ResponseDto getMembersAll () {
         return ResponseDto.builder()
