@@ -33,7 +33,7 @@ public class SecurityConfig {
         http.cors(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .requestMatchers("/svc/**").hasAuthority("ROLE_USER")
+                .requestMatchers("/svc/**").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .requestMatchers("/pub/**").permitAll()
                 .anyRequest().authenticated())
             .sessionManagement(httpSecuritySessionManagementConfigurer ->
