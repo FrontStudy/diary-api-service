@@ -47,7 +47,7 @@ public class DiaryController {
     }
 
     @CrossOrigin
-    @PostMapping("/svc/diaryList")
+    @PostMapping("/svc/me/diaryList")
     public ResponseDto getDiaryListByMemberId(@RequestBody DiaryListRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PageInfoDto pageInfo = PageInfoDto.builder().build();
