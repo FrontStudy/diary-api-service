@@ -46,9 +46,14 @@ public class DiaryController {
     }
 
     @GetMapping("/svc/me/diaryList")
-    public ResponseDto getDiaryListByMemberId(@RequestBody DiaryListRequestDto dto) {
+    public ResponseDto getDiaryListByMemberId(@RequestParam int offset, @RequestParam int size) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        DiaryListRequestDto dto = DiaryListRequestDto.builder()
+                .offset(offset)
+                .size(size)
+                .build();
 
         return ResponseDto.builder()
                 .status("success")
