@@ -90,7 +90,7 @@ public class DiaryController {
 
         return ResponseDto.builder()
                 .status("success")
-                .data(diaryService.getpubliDiaryList(dto, pageInfo))
+                .data(diaryService.getpublicDiaryList(dto, pageInfo))
                 .page(pageInfo)
                 .build();
     }

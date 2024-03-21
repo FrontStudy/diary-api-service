@@ -133,7 +133,7 @@ public class DiaryService {
         }
     }
 
-    public List<DiaryResponseDto> getpubliDiaryList(DiaryListRequestDto dto, PageInfoDto pageDto) {
+    public List<DiaryResponseDto> getpublicDiaryList(DiaryListRequestDto dto, PageInfoDto pageDto) {
         try {
             Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
             Page<Diary> page = diaryRepository.findAllByAccessLevelAndActive("public", true, pageable);
