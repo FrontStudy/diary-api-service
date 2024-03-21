@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
 
-    @CrossOrigin
     @PostMapping("/pub/members")
     public ResponseDto memberSave(@RequestBody MemberRequestDto dto) {
         if (dto.getEmail() != null && dto.getPasswd() != null) {
@@ -34,7 +34,6 @@ public class MemberController {
         }
     }
 
-    @CrossOrigin
     @PostMapping("/pub/login")
     public ResponseDto login (@RequestBody LoginRequestDto dto) {
 
@@ -57,7 +56,6 @@ public class MemberController {
         }
     }
 
-    @CrossOrigin
     @PutMapping("/svc/members/{id}")
     public ResponseDto update(@PathVariable Long id, @RequestBody MemberUpdateRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -69,7 +67,6 @@ public class MemberController {
                 .build();
     }
 
-    @CrossOrigin
     @PutMapping("/admin/members/{id}")
     public ResponseDto updateByAdmin(@PathVariable Long id, @RequestBody MemberUpdateAdminRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -82,7 +79,6 @@ public class MemberController {
                 .build();
     }
 
-    @CrossOrigin
     @GetMapping("/pub/members")
     public ResponseDto getMembersAll () {
         return ResponseDto.builder()
@@ -91,7 +87,6 @@ public class MemberController {
                 .build();
     }
 
-    @CrossOrigin
     @PutMapping("/svc/setAdminRole")
     public ResponseDto setAdminRole () {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -101,8 +96,6 @@ public class MemberController {
                 .build();
     }
 
-
-    @CrossOrigin
     @PostMapping("/admin/memberList")
     public ResponseDto getMemberList (@RequestBody RequestMemberListDto dto) {
         System.out.println("MemberController.getMemberList");
@@ -119,13 +112,11 @@ public class MemberController {
                 .build();
     }
 
-    @CrossOrigin
     @GetMapping("/pub/members/{id}")
     public MemberResponseDto findById (@PathVariable Long id) {
         return memberService.findById(id);
     }
 
-    @CrossOrigin
     @GetMapping("/pub/check-email")
     public ResponseDto checkEmailDuplicate(@RequestParam(name = "email") String email) {
         boolean exists = memberService.existsByEmail(email);
@@ -135,7 +126,6 @@ public class MemberController {
                 .build();
     }
 
-    @CrossOrigin
     @GetMapping("/pub/check-nickname")
     public ResponseDto checkNicknameDuplicate(@RequestParam(name = "nickname") String nickname) {
         boolean exists = memberService.existsByNickname(nickname);

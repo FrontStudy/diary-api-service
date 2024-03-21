@@ -10,13 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class DiaryShareController {
 
     private final DiaryShareService diaryShareService;
 
-    @CrossOrigin
     @PatchMapping("/svc/diary/{diaryId}/shares")
     public ResponseDto updateDiaryShare(@PathVariable Long diaryId, @RequestBody DiaryShareRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -28,7 +28,6 @@ public class DiaryShareController {
                 .build();
     }
 
-    @CrossOrigin
     @GetMapping("/svc/diary/{diaryId}/shares")
     public ResponseDto getMembersByDiary(@PathVariable Long diaryId) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -40,7 +39,6 @@ public class DiaryShareController {
                 .build();
     }
 
-    @CrossOrigin
     @GetMapping("/svc/member/{memberId}/shares")
     public ResponseDto getSharedDiariesByMember(@PathVariable Long memberId) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

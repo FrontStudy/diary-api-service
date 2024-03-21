@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @CrossOrigin
     @PostMapping("/svc/diary")
     public ResponseDto diarySave(@RequestBody DiaryRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -31,7 +31,6 @@ public class DiaryController {
                 .build();
     }
 
-    @CrossOrigin
     @PutMapping("/svc/diary/{diaryId}")
     public ResponseDto update(@PathVariable Long diaryId, @RequestBody DiaryUpdateRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -46,7 +45,6 @@ public class DiaryController {
                 .build();
     }
 
-    @CrossOrigin
     @PostMapping("/svc/me/diaryList")
     public ResponseDto getDiaryListByMemberId(@RequestBody DiaryListRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -59,7 +57,6 @@ public class DiaryController {
                 .build();
     }
 
-    @CrossOrigin
     @PostMapping("/admin/diaryList")
     public ResponseDto getDiaryListAsAdmin(@RequestBody DiaryListAdminRequestDto dto) {
         PageInfoDto pageInfo = PageInfoDto.builder().build();

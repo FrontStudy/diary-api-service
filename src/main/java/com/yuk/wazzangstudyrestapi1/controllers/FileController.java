@@ -15,12 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 public class FileController {
     final private FileService fileService;
 
-    @CrossOrigin
     @PostMapping(value="/svc/upImages")
     public ResponseDto upImages(@RequestParam MultipartFile[] imgs) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -41,7 +41,6 @@ public class FileController {
         }
     }
 
-    @CrossOrigin
     @GetMapping(value="/svc/getImages")
     public ResponseDto getImages(@RequestParam String fileName) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -63,7 +62,6 @@ public class FileController {
         }
     }
 
-    @CrossOrigin
     @GetMapping(value="/pub/getImages")
     public ResponseDto getImagesPub(@RequestParam String fileName) {
         if(fileName == null || fileName.isEmpty()) throw new CustomException(ErrorCode.EMPTY_REQUEST);
