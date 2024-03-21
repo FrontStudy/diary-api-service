@@ -1,11 +1,13 @@
 package com.yuk.wazzangstudyrestapi1.services;
 
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
+import com.yuk.wazzangstudyrestapi1.domains.DiaryShare;
 import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryRepository;
+import com.yuk.wazzangstudyrestapi1.repositorys.DiaryShareRepository;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiarySpecifications;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 public class DiaryService {
 
     private final DiaryRepository diaryRepository;
+    private final DiaryShareRepository diaryShareRepository;
 
     public Long save(DiaryRequestDto requestDto, Long memberId) {
         System.out.println("DiaryService.save");
@@ -79,6 +82,29 @@ public class DiaryService {
             pageDto.setTotalElements(page.getTotalElements());
 
             return page.getContent().stream()
+                    .map(DiaryResponseDto::from)
+                    .collect(Collectors.toList());
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
+    public List<DiaryResponseDto> getSharedDiaryListByMemberId(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
+        try {
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            List<DiaryShare> diaryShares = diaryShareRepository.findAllByMemberId(memberId);
+            List<Long> diaryIds = diaryShares.stream().map(
+                    DiaryShare::getDiaryId
+            ).toList();
+
+            Page<Diary> diaries = diaryRepository.findAllByIdIn(diaryIds, pageable);
+
+            pageDto.setTotalPages((long) diaries.getTotalPages());
+            pageDto.setTotalElements(diaries.getTotalElements());
+
+            return diaries.getContent().stream()
                     .map(DiaryResponseDto::from)
                     .collect(Collectors.toList());
         } catch (PersistenceException e) {
