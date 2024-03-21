@@ -1,6 +1,7 @@
 package com.yuk.wazzangstudyrestapi1.controllers;
 
 import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryListAdminRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryListRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryUpdateRequestDto;
@@ -54,6 +55,18 @@ public class DiaryController {
         return ResponseDto.builder()
                 .status("success")
                 .data(diaryService.getListByMemberId(user.getUid(), dto, pageInfo))
+                .page(pageInfo)
+                .build();
+    }
+
+    @CrossOrigin
+    @PostMapping("/admin/diaryList")
+    public ResponseDto getDiaryListAsAdmin(@RequestBody DiaryListAdminRequestDto dto) {
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getListAsAdmin(dto, pageInfo))
                 .page(pageInfo)
                 .build();
     }

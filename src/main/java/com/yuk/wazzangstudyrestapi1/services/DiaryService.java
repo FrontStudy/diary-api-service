@@ -2,13 +2,11 @@ package com.yuk.wazzangstudyrestapi1.services;
 
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
 import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
-import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryListRequestDto;
-import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryRequestDto;
-import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryResponseDto;
-import com.yuk.wazzangstudyrestapi1.dtos.diary.DiaryUpdateRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.diary.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryRepository;
+import com.yuk.wazzangstudyrestapi1.repositorys.DiarySpecifications;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +55,7 @@ public class DiaryService {
         System.out.println("DiaryService.update");
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
-        if(!Objects.equals(diary.getMemberId(), memberId)) {
+        if (!Objects.equals(diary.getMemberId(), memberId)) {
             throw new CustomException(ErrorCode.INSUFFICIENT_PERMISSION);
         }
 
@@ -87,7 +86,24 @@ public class DiaryService {
         } catch (Exception e) {
             throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
+    }
 
+    public List<DiaryResponseDto> getListAsAdmin(DiaryListAdminRequestDto dto, PageInfoDto pageDto) {
+        try {
+            Specification<Diary> spec = DiarySpecifications.withDiaryListAdminRequestDto(dto);
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            Page<Diary> page = diaryRepository.findAll(spec, pageable);
 
+            pageDto.setTotalPages((long) page.getTotalPages());
+            pageDto.setTotalElements(page.getTotalElements());
+
+            return page.getContent().stream()
+                    .map(DiaryResponseDto::from)
+                    .collect(Collectors.toList());
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
     }
 }
