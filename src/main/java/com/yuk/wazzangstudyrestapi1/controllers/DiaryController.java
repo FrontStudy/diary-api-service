@@ -79,6 +79,22 @@ public class DiaryController {
                 .build();
     }
 
+    @GetMapping("/pub/diaryList")
+    public ResponseDto getPublicDiaryList(@RequestParam int offset, @RequestParam int size) {
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        DiaryListRequestDto dto = DiaryListRequestDto.builder()
+                .offset(offset)
+                .size(size)
+                .build();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getpubliDiaryList(dto, pageInfo))
+                .page(pageInfo)
+                .build();
+    }
+
     @PostMapping("/admin/diaryList")
     public ResponseDto getDiaryListAsAdmin(@RequestBody DiaryListAdminRequestDto dto) {
         PageInfoDto pageInfo = PageInfoDto.builder().build();

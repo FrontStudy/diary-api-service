@@ -132,4 +132,23 @@ public class DiaryService {
             throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
     }
+
+    public List<DiaryResponseDto> getpubliDiaryList(DiaryListRequestDto dto, PageInfoDto pageDto) {
+        try {
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            Page<Diary> page = diaryRepository.findAllByAccessLevelAndActive("public", true, pageable);
+
+            pageDto.setTotalPages((long) page.getTotalPages());
+            pageDto.setTotalElements(page.getTotalElements());
+
+            return page.getContent().stream()
+                    .map(DiaryResponseDto::from)
+                    .collect(Collectors.toList());
+
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
 }

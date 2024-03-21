@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -15,4 +14,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecific
 
     Page<Diary> findAllByMemberId(Long memberId, Pageable pageable);
     Page<Diary> findAllByIdIn(List<Long> id, Pageable pageable);
+
+    Page<Diary> findAllByAccessLevelAndActive(String accessLevel, Boolean active, Pageable pageable);
 }
