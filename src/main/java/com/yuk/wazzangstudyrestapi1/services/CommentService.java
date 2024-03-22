@@ -20,7 +20,7 @@ public class CommentService {
     public Long save(CommentRequestDto dto, Long uid) {
         try {
             Comment comment = Comment.builder()
-                    .memberId(dto.getMemberId())
+                    .memberId(uid)
                     .diaryId(dto.getDiaryId())
                     .content(dto.getContent())
                     .build();
