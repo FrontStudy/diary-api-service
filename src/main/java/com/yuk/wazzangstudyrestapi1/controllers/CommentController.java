@@ -2,8 +2,10 @@ package com.yuk.wazzangstudyrestapi1.controllers;
 
 import com.yuk.wazzangstudyrestapi1.dtos.ResponseDto;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentRequestDto;
+import com.yuk.wazzangstudyrestapi1.security.SecurityUserDetail;
 import com.yuk.wazzangstudyrestapi1.services.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,10 @@ public class CommentController {
 
     @PostMapping("/svc/comment")
     public ResponseDto commentSave(@RequestBody CommentRequestDto dto) {
-        return null;
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseDto.builder()
+                .status("success")
+                .data(commentService.save(dto, user.getUid()))
+                .build();
     }
 }
