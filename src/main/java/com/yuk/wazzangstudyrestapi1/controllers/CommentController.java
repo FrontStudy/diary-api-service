@@ -30,7 +30,7 @@ public class CommentController {
     }
 
     @GetMapping("/pub/diary/{diaryId}/comment")
-    public ResponseDto commentListByDiary(@PathVariable Long diaryId) {
+    public ResponseDto commentListByPubDiary(@PathVariable Long diaryId) {
         List<CommentResponseDto> comments = commentService.getCommentByPubDiary(diaryId);
         return ResponseDto.builder()
                 .status("success")
