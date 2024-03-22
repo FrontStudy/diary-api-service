@@ -1,15 +1,17 @@
 package com.yuk.wazzangstudyrestapi1.controllers;
 
+import com.yuk.wazzangstudyrestapi1.domains.Comment;
 import com.yuk.wazzangstudyrestapi1.dtos.ResponseDto;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentRequestDto;
+import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentResponseDto;
 import com.yuk.wazzangstudyrestapi1.security.SecurityUserDetail;
 import com.yuk.wazzangstudyrestapi1.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Objects;
 
 @CrossOrigin
 @RestController
@@ -24,6 +26,15 @@ public class CommentController {
         return ResponseDto.builder()
                 .status("success")
                 .data(commentService.save(dto, user.getUid()))
+                .build();
+    }
+
+    @GetMapping("/pub/{diaryId}/comment")
+    public ResponseDto commentListByDiary(@PathVariable Long diaryId) {
+        List<CommentResponseDto> comments = commentService.getCommentByPubDiary(diaryId);
+        return ResponseDto.builder()
+                .status("success")
+                .data(comments)
                 .build();
     }
 }
