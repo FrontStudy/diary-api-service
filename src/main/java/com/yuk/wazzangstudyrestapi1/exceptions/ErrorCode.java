@@ -33,6 +33,7 @@ public enum ErrorCode {
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
+    CONFLICT_LIKES_STATE(CONFLICT, "좋아요의 현재 상태와의 충돌이 있습니다"),
 
     /* 500 Internal Server Error */
     PERSISTENCE_ERROR(INTERNAL_SERVER_ERROR, "데이터베이스 작업 중 오류가 발생했습니다."),
