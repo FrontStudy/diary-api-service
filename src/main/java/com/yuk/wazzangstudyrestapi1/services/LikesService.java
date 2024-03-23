@@ -8,6 +8,7 @@ import com.yuk.wazzangstudyrestapi1.repositorys.LikesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class LikesService {
         return true;
     }
 
+    @Transactional
     public boolean delete(Long diaryId, Long userId) {
         if(likesRepository.existsLikesByDiaryIdAndMemberId(diaryId, userId)) {
             likesRepository.deleteLikesByDiaryIdAndMemberId(diaryId, userId);
