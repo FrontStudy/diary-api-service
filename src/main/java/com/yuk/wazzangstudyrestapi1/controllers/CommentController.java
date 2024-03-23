@@ -1,6 +1,5 @@
 package com.yuk.wazzangstudyrestapi1.controllers;
 
-import com.yuk.wazzangstudyrestapi1.domains.Comment;
 import com.yuk.wazzangstudyrestapi1.dtos.ResponseDto;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentResponseDto;
@@ -11,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @CrossOrigin
 @RestController
@@ -35,6 +33,15 @@ public class CommentController {
         return ResponseDto.builder()
                 .status("success")
                 .data(comments)
+                .build();
+    }
+
+    @GetMapping("/svc/diary/{diaryId}/comment")
+    public ResponseDto commentListByDiary(@PathVariable Long diaryId) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseDto.builder()
+                .status("success")
+                .data(commentService.getCommentsByPrivateDiary(user.getUid(), diaryId))
                 .build();
     }
 }
