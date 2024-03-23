@@ -1,11 +1,13 @@
 package com.yuk.wazzangstudyrestapi1.services;
 
+import com.yuk.wazzangstudyrestapi1.domains.Bookmark;
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
 import com.yuk.wazzangstudyrestapi1.domains.DiaryShare;
 import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
+import com.yuk.wazzangstudyrestapi1.repositorys.BookmarkRepository;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryRepository;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryShareRepository;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiarySpecifications;
@@ -30,6 +32,7 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final DiaryShareRepository diaryShareRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public Long save(DiaryRequestDto requestDto, Long memberId) {
         System.out.println("DiaryService.save");
@@ -150,5 +153,20 @@ public class DiaryService {
         } catch (Exception e) {
             throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
+    }
+
+    public List<DiaryResponseDto> getBookmarkedDiaryList(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
+        List<Bookmark> bookmarks = bookmarkRepository.findBookmarksByMemberId(memberId);
+        if(bookmarks.isEmpty()) return null;
+
+        Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+        Page<Diary> page = diaryRepository.findDiariesByIdInAndActive(bookmarks.stream().map(Bookmark::getDiaryId).toList(), true, pageable);
+
+        pageDto.setTotalPages((long) page.getTotalPages());
+        pageDto.setTotalElements(page.getTotalElements());
+
+        return page.getContent().stream()
+                .map(DiaryResponseDto::from)
+                .toList();
     }
 }

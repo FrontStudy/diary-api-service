@@ -105,4 +105,24 @@ public class DiaryController {
                 .page(pageInfo)
                 .build();
     }
+
+
+    @GetMapping("svc/member/me/bookmark/diary")
+    public ResponseDto getBookmarkDiaries(@RequestParam int offset, @RequestParam int size) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = user.getUid();
+
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        DiaryListRequestDto dto = DiaryListRequestDto.builder()
+                .offset(offset)
+                .size(size)
+                .build();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getBookmarkedDiaryList(userId, dto, pageInfo))
+                .build();
+
+    }
 }

@@ -21,4 +21,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecific
     Optional<Diary> findByIdAndActive(Long id, Boolean active);
 
     boolean existsDiaryById(Long id);
+
+    Page<Diary> findDiariesByIdInAndActive(List<Long> id, Boolean active, Pageable pageable);
 }

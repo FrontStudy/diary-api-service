@@ -37,6 +37,8 @@ public class DiaryShareService {
             throw new CustomException(ErrorCode.INSUFFICIENT_PERMISSION);
         }
 
+        // Todo : private -> public 으로만 변경 가능하도록 제한 필요, 혹은 변경 가능하더라도 관련 데이터 삭제 논의 필요
+
         List<DiaryShare> existingShares = diaryShareRepository.findAllByDiaryId(diaryId);
         Set<Long> existingMemberIds = existingShares.stream()
                 .map(DiaryShare::getMemberId)
