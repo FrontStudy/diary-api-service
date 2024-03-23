@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecificationExecutor<Member> {
+public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecificationExecutor<Member>, CustomMemberRepository {
     boolean existsByEmail(String email);
     boolean existsByNickname(String nickname);
 

@@ -103,7 +103,7 @@ public class MemberController {
 
         PageInfoDto pageInfo = PageInfoDto.builder().build();
 
-        List<MemberResponseDto> resDtoList = memberService.findWithSearchConditions(dto, pageInfo);
+        List<MemberAdminResponseDto> resDtoList = memberService.findWithSearchConditions(dto, pageInfo);
 
         return ResponseDto.builder()
                 .status("success")
