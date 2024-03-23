@@ -29,6 +29,9 @@ public class CommentService {
     private final DiaryShareRepository diaryShareRepository;
 
     public Long save(CommentRequestDto dto, Long uid) {
+
+        //ToDo : 내가 읽을 권한이 있는 일기인지 체크 필요
+
         try {
             Comment comment = Comment.builder()
                     .memberId(uid)

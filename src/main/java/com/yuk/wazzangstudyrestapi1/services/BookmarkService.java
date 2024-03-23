@@ -21,6 +21,9 @@ public class BookmarkService {
         if(!diaryRepository.existsDiaryById(diaryId)) {
             throw new CustomException(ErrorCode.DIARY_NOT_FOUND);
         }
+
+        //ToDo : 내가 읽을 권한이 있는 일기인지 체크 필요
+
         try {
             Bookmark bookmark = new Bookmark(diaryId, memberId);
             bookmarkRepository.save(bookmark);
