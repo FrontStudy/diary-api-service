@@ -19,4 +19,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecific
     Page<Diary> findAllByAccessLevelAndActive(String accessLevel, Boolean active, Pageable pageable);
 
     Optional<Diary> findByIdAndActive(Long id, Boolean active);
+
+    boolean existsDiaryById(Long id);
 }
