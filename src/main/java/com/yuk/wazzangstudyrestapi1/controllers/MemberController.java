@@ -135,4 +135,22 @@ public class MemberController {
                 .build();
     }
 
+    @PostMapping("/svc/member/deactivate")
+    public ResponseDto deactivateMember() {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(memberService.deactivate(user.getUid()))
+                .build();
+    }
+
+    @PostMapping("/admin/member/deactivate/{id}")
+    public ResponseDto deactivateMember(@PathVariable Long id) {
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(memberService.deactivate(id))
+                .build();
+    }
 }

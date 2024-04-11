@@ -90,4 +90,8 @@ public class Member extends BaseTimeEntity {
     public void setAdminRole() {
         this.userrole = "ROLE_ADMIN";
     }
+
+    public void deactivate() {
+        this.active = false;
+    }
 }
