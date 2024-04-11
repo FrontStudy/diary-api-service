@@ -27,7 +27,7 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 "(SELECT COUNT(c) FROM Comment c WHERE c.memberId = m.id AND c.active = true)) " +
                 "FROM Member m ");
 
-        List<MemberAdminResponseDto> list = makeQueryWithSearchConditions(dto, jpql, " GROUP BY m.id", MemberAdminResponseDto.class)
+        List<MemberAdminResponseDto> list = makeQueryWithSearchConditions(dto, jpql, " GROUP BY m.id ORDER BY m.createdDate DESC", MemberAdminResponseDto.class)
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();

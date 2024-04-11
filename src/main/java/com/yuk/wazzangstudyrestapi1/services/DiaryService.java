@@ -18,6 +18,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +79,8 @@ public class DiaryService {
     @Transactional
     public List<DiaryResponseDto> getListByMemberId(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
         try {
-            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
-            Page<Diary> page = diaryRepository.findAllByMemberId(memberId, pageable);
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize(), Sort.by("createdDate").descending());
+            Page<Diary> page = diaryRepository.findAllByMemberIdOrderByCreatedDateDesc(memberId, pageable);
 
             pageDto.setTotalPages((long) page.getTotalPages());
             pageDto.setTotalElements(page.getTotalElements());
@@ -96,13 +97,13 @@ public class DiaryService {
 
     public List<DiaryResponseDto> getSharedDiaryListByMemberId(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
         try {
-            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize(), Sort.by("createdDate").descending());
             List<DiaryShare> diaryShares = diaryShareRepository.findAllByMemberId(memberId);
             List<Long> diaryIds = diaryShares.stream().map(
                     DiaryShare::getDiaryId
             ).toList();
 
-            Page<Diary> diaries = diaryRepository.findAllByIdIn(diaryIds, pageable);
+            Page<Diary> diaries = diaryRepository.findAllByIdInOrderByCreatedDateDesc(diaryIds, pageable);
 
             pageDto.setTotalPages((long) diaries.getTotalPages());
             pageDto.setTotalElements(diaries.getTotalElements());
@@ -120,7 +121,7 @@ public class DiaryService {
     public List<DiaryResponseDto> getListAsAdmin(DiaryListAdminRequestDto dto, PageInfoDto pageDto) {
         try {
             Specification<Diary> spec = DiarySpecifications.withDiaryListAdminRequestDto(dto);
-            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize(), Sort.by("createdDate").descending());
             Page<Diary> page = diaryRepository.findAll(spec, pageable);
 
             pageDto.setTotalPages((long) page.getTotalPages());
@@ -139,7 +140,7 @@ public class DiaryService {
     public List<DiaryResponseDto> getpublicDiaryList(DiaryListRequestDto dto, PageInfoDto pageDto) {
         try {
             Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
-            Page<Diary> page = diaryRepository.findAllByAccessLevelAndActive("public", true, pageable);
+            Page<Diary> page = diaryRepository.findAllByAccessLevelAndActiveOrderByCreatedDateDesc("public", true, pageable);
 
             pageDto.setTotalPages((long) page.getTotalPages());
             pageDto.setTotalElements(page.getTotalElements());
@@ -160,7 +161,7 @@ public class DiaryService {
         if(bookmarks.isEmpty()) return null;
 
         Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
-        Page<Diary> page = diaryRepository.findDiariesByIdInAndActive(bookmarks.stream().map(Bookmark::getDiaryId).toList(), true, pageable);
+        Page<Diary> page = diaryRepository.findDiariesByIdInAndActiveOrderByCreatedDateDesc(bookmarks.stream().map(Bookmark::getDiaryId).toList(), true, pageable);
 
         pageDto.setTotalPages((long) page.getTotalPages());
         pageDto.setTotalElements(page.getTotalElements());

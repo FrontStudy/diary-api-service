@@ -57,7 +57,7 @@ public class CommentService {
             throw new CustomException(ErrorCode.INSUFFICIENT_PERMISSION);
         }
 
-        List<Comment> comments = commentRepository.findCommentsByDiaryIdAndActive(diaryId, true);
+        List<Comment> comments = commentRepository.findCommentsByDiaryIdAndActiveOrderByCreatedDateDesc(diaryId, true);
 
         return comments.stream()
                 .map(CommentResponseDto::from)
@@ -95,7 +95,7 @@ public class CommentService {
     }
 
     private List<CommentResponseDto> getCommentsForDiary(Long diaryId) {
-        List<Comment> comments = commentRepository.findCommentsByDiaryIdAndActive(diaryId, true);
+        List<Comment> comments = commentRepository.findCommentsByDiaryIdAndActiveOrderByCreatedDateDesc(diaryId, true);
         return comments.stream()
                 .map(CommentResponseDto::from)
                 .collect(Collectors.toList());

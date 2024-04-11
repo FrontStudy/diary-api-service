@@ -13,14 +13,14 @@ import java.util.Optional;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecificationExecutor<Diary> {
 
-    Page<Diary> findAllByMemberId(Long memberId, Pageable pageable);
-    Page<Diary> findAllByIdIn(List<Long> id, Pageable pageable);
+    Page<Diary> findAllByMemberIdOrderByCreatedDateDesc(Long memberId, Pageable pageable);
+    Page<Diary> findAllByIdInOrderByCreatedDateDesc(List<Long> id, Pageable pageable);
 
-    Page<Diary> findAllByAccessLevelAndActive(String accessLevel, Boolean active, Pageable pageable);
+    Page<Diary> findAllByAccessLevelAndActiveOrderByCreatedDateDesc(String accessLevel, Boolean active, Pageable pageable);
 
     Optional<Diary> findByIdAndActive(Long id, Boolean active);
 
     boolean existsDiaryById(Long id);
 
-    Page<Diary> findDiariesByIdInAndActive(List<Long> id, Boolean active, Pageable pageable);
+    Page<Diary> findDiariesByIdInAndActiveOrderByCreatedDateDesc(List<Long> id, Boolean active, Pageable pageable);
 }
