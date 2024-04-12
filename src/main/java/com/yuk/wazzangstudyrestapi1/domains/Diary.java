@@ -61,4 +61,8 @@ public class Diary extends BaseTimeEntity {
         this.active = active;
     }
 
+    public void deactivate() {
+        this.active = false;
+    }
+
 }

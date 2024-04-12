@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecificationExecutor<Diary> {
 
+    List<Diary> findDiaryByMemberId(Long memberId);
+
     Page<Diary> findAllByMemberIdOrderByCreatedDateDesc(Long memberId, Pageable pageable);
     Page<Diary> findAllByIdInOrderByCreatedDateDesc(List<Long> id, Pageable pageable);
 

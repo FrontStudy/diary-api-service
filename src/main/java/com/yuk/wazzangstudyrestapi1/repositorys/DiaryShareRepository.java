@@ -11,4 +11,8 @@ public interface DiaryShareRepository  extends JpaRepository<DiaryShare, Long> {
 
     List<DiaryShare> findAllByMemberId(Long member_id);
     List<DiaryShare> findAllByDiaryId(Long diary_id);
+
+    boolean deleteAllByDiaryId(Long diaryId);
+
+    boolean deleteAllByMemberId(Long memberId);
 }

@@ -1,11 +1,12 @@
 package com.yuk.wazzangstudyrestapi1.services;
 
+import com.yuk.wazzangstudyrestapi1.domains.Diary;
 import com.yuk.wazzangstudyrestapi1.domains.Member;
 import com.yuk.wazzangstudyrestapi1.dtos.*;
 import com.yuk.wazzangstudyrestapi1.dtos.member.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
-import com.yuk.wazzangstudyrestapi1.repositorys.MemberRepository;
+import com.yuk.wazzangstudyrestapi1.repositorys.*;
 import com.yuk.wazzangstudyrestapi1.security.SecurityUserDetail;
 import com.yuk.wazzangstudyrestapi1.utils.EncryptUtil;
 import jakarta.persistence.EntityExistsException;
@@ -33,9 +34,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
 
+    private final DiaryService diaryService;
+
     private final JwtComponent jwtComponent;
     private final AuthenticationManager authenticationManager;
     private final MemberRepository memberRepository;
+    private final DiaryRepository diaryRepository;
+    private final DiaryShareRepository diaryShareRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final LikesRepository likesRepository;
 
     @Transactional
     public Long save(MemberRequestDto requestDto) {
@@ -174,14 +181,23 @@ public class MemberService {
 
     @Transactional
     public boolean deactivate(Long memberId) {
-        try {
-            Member member = memberRepository.findById(memberId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-            member.deactivate();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        member.deactivate();
+        bookmarkRepository.deleteAllByMemberId(memberId);
+        diaryShareRepository.deleteAllByMemberId(memberId);
+        likesRepository.deleteAllByMemberId(memberId);
 
+        List<Diary> diaries = diaryRepository.findDiaryByMemberId(memberId);
+        diaries.forEach(
+                diary -> {
+                    try {
+                        diaryService.deactivateDiary(diary.getId());
+                    } catch(Exception e) {
+                        System.out.println("Error during delete diary "+diary.getId());
+                    }
+                }
+        );
+        return true;
     }
 }

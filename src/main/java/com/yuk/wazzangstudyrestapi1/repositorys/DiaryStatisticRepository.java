@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface DiaryStatisticRepository extends JpaRepository<DiaryStatistic, Long>  {
     Optional<DiaryStatistic> findDiaryStatisticByDiaryId(Long diaryId);
+    boolean deleteAllByDiaryId(Long diaryId);
 }

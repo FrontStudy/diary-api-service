@@ -7,10 +7,7 @@ import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
 import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
-import com.yuk.wazzangstudyrestapi1.repositorys.BookmarkRepository;
-import com.yuk.wazzangstudyrestapi1.repositorys.DiaryRepository;
-import com.yuk.wazzangstudyrestapi1.repositorys.DiaryShareRepository;
-import com.yuk.wazzangstudyrestapi1.repositorys.DiarySpecifications;
+import com.yuk.wazzangstudyrestapi1.repositorys.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +31,9 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final DiaryShareRepository diaryShareRepository;
+    private final DiaryStatisticRepository diaryStatisticRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final LikesRepository likesRepository;
 
     public Long save(DiaryRequestDto requestDto, Long memberId) {
         System.out.println("DiaryService.save");
@@ -169,5 +169,18 @@ public class DiaryService {
         return page.getContent().stream()
                 .map(DiaryResponseDto::from)
                 .toList();
+    }
+
+    @Transactional
+    public boolean deactivateDiary(Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
+        diary.deactivate();
+        diaryShareRepository.deleteAllByDiaryId(diaryId);
+        diaryStatisticRepository.deleteAllByDiaryId(diaryId);
+        bookmarkRepository.deleteAllByDiaryId(diaryId);
+        likesRepository.deleteByDiaryId(diaryId);
+
+        return true;
     }
 }
