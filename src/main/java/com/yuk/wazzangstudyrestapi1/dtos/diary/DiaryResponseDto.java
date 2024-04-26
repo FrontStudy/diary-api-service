@@ -24,6 +24,7 @@ public class DiaryResponseDto extends BaseTimeEntity {
     private Long imgid;
     private String accessLevel;
     private Boolean active;
+    private Long readCount;
 
     public DiaryResponseDto(LocalDateTime createdDate, LocalDateTime modifiedDate, Long id, Long memberId, String title, String content, Long imgid, String accessLevel, Boolean active) {
         super(createdDate, modifiedDate);

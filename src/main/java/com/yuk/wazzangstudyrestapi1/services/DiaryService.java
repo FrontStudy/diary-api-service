@@ -3,6 +3,7 @@ package com.yuk.wazzangstudyrestapi1.services;
 import com.yuk.wazzangstudyrestapi1.domains.Bookmark;
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
 import com.yuk.wazzangstudyrestapi1.domains.DiaryShare;
+import com.yuk.wazzangstudyrestapi1.domains.DiaryStatistic;
 import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
@@ -85,9 +86,7 @@ public class DiaryService {
             pageDto.setTotalPages((long) page.getTotalPages());
             pageDto.setTotalElements(page.getTotalElements());
 
-            return page.getContent().stream()
-                    .map(DiaryResponseDto::from)
-                    .collect(Collectors.toList());
+            return convertPageToListWithViewCount(page);
         } catch (PersistenceException e) {
             throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
         } catch (Exception e) {
@@ -127,9 +126,7 @@ public class DiaryService {
             pageDto.setTotalPages((long) page.getTotalPages());
             pageDto.setTotalElements(page.getTotalElements());
 
-            return page.getContent().stream()
-                    .map(DiaryResponseDto::from)
-                    .collect(Collectors.toList());
+            return convertPageToListWithViewCount(page);
         } catch (PersistenceException e) {
             throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
         } catch (Exception e) {
@@ -145,9 +142,7 @@ public class DiaryService {
             pageDto.setTotalPages((long) page.getTotalPages());
             pageDto.setTotalElements(page.getTotalElements());
 
-            return page.getContent().stream()
-                    .map(DiaryResponseDto::from)
-                    .collect(Collectors.toList());
+            return convertPageToListWithViewCount(page);
 
         } catch (PersistenceException e) {
             throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
@@ -166,9 +161,7 @@ public class DiaryService {
         pageDto.setTotalPages((long) page.getTotalPages());
         pageDto.setTotalElements(page.getTotalElements());
 
-        return page.getContent().stream()
-                .map(DiaryResponseDto::from)
-                .toList();
+        return convertPageToListWithViewCount(page);
     }
 
     @Transactional
@@ -182,5 +175,20 @@ public class DiaryService {
         likesRepository.deleteByDiaryId(diaryId);
 
         return true;
+    }
+
+    public List<DiaryResponseDto> convertPageToListWithViewCount(Page<Diary> page) {
+        return page.getContent().stream()
+                .map(diary -> {
+                    DiaryResponseDto rDto = DiaryResponseDto.from(diary);
+                    Optional<DiaryStatistic> opt = diaryStatisticRepository.findDiaryStatisticByDiaryId(diary.getId());
+                    if(opt.isPresent()) {
+                        rDto.setReadCount(opt.get().getReadCount());
+                    } else {
+                        rDto.setReadCount(0L);
+                    }
+                    return rDto;
+                })
+                .toList();
     }
 }
