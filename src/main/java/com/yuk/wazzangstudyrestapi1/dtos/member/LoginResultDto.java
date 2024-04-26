@@ -10,6 +10,11 @@ import lombok.Data;
 public class LoginResultDto {
     private Long id;
     private String email;
+    private String profilePicture;
+    private String nickname;
+    private String name;
+    private String birthDate;
+    private String gender;
     private String jtoken;
     private String userrole;
 }

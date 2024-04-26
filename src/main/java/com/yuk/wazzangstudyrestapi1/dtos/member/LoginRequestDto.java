@@ -1,9 +1,10 @@
 package com.yuk.wazzangstudyrestapi1.dtos.member;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Getter
+
+@Data
 @NoArgsConstructor
 public class LoginRequestDto {
     private String email;

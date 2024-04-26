@@ -45,7 +45,7 @@ public class MemberService {
     private final LikesRepository likesRepository;
 
     @Transactional
-    public Long save(MemberRequestDto requestDto) {
+    public LoginResultDto save(MemberRequestDto requestDto) {
         try {
             Member member = Member.builder()
                     .email(requestDto.getEmail())
@@ -59,7 +59,13 @@ public class MemberService {
                     .active(requestDto.getActive())
                     .build();
 
-            return memberRepository.save(member).getId();
+            memberRepository.save(member);
+
+            LoginRequestDto loginReqDto = new LoginRequestDto();
+            loginReqDto.setEmail(requestDto.getEmail());
+            loginReqDto.setPasswd(requestDto.getPasswd());
+            return login(loginReqDto);
+
         } catch (EntityExistsException | ConstraintViolationException | DataIntegrityViolationException e) {
             throw new CustomException(ErrorCode.DUPLICATE_RESOURCE);
         } catch (PersistenceException e) {
@@ -84,6 +90,10 @@ public class MemberService {
             rtnDto.setJtoken(jtoken);
             rtnDto.setUserrole(strRoles);
             rtnDto.setId(detail.getUid());
+            rtnDto.setGender(detail.getGender());
+            rtnDto.setName(detail.getName());
+            rtnDto.setNickname(detail.getNickname());
+            rtnDto.setBirthDate(detail.getBirthDate());
 
             updateUserToken(detail.getUid(),jtoken);
 

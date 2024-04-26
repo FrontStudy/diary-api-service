@@ -17,6 +17,11 @@ import java.util.List;
 public class SecurityUserDetail implements UserDetails {
     private String username;
     private String password;
+    private String profilePicture;
+    private String nickname;
+    private String name;
+    private String birthDate;
+    private String gender;
     private String btoken;
     private Long uid;
     private List<String> roles;
