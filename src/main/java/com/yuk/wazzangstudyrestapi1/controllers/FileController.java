@@ -21,10 +21,8 @@ import java.util.Arrays;
 public class FileController {
     final private FileService fileService;
 
-    @PostMapping(value="/svc/upImages")
+    @PostMapping(value="/pub/upImages")
     public ResponseDto upImages(@RequestParam MultipartFile[] imgs) {
-        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         if(imgs.length < 1) throw new CustomException(ErrorCode.EMPTY_REQUEST);
 
         ArrayList<ImageInfoResponseDto> result = fileService.uploadImages(imgs);
