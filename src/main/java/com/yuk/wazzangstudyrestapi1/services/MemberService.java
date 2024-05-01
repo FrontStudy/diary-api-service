@@ -94,6 +94,7 @@ public class MemberService {
             rtnDto.setName(detail.getName());
             rtnDto.setNickname(detail.getNickname());
             rtnDto.setBirthDate(detail.getBirthDate());
+            rtnDto.setProfilePicture(detail.getProfilePicture());
 
             updateUserToken(detail.getUid(),jtoken);
 
