@@ -43,6 +43,7 @@ public class MemberService {
     private final DiaryShareRepository diaryShareRepository;
     private final BookmarkRepository bookmarkRepository;
     private final LikesRepository likesRepository;
+    private final FollowRepository followRepository;
 
     @Transactional
     public LoginResultDto save(MemberRequestDto requestDto) {
@@ -198,6 +199,8 @@ public class MemberService {
         bookmarkRepository.deleteAllByMemberId(memberId);
         diaryShareRepository.deleteAllByMemberId(memberId);
         likesRepository.deleteAllByMemberId(memberId);
+        followRepository.deleteAllByFollowedId(memberId);
+        followRepository.deleteAllByFollowerId(memberId);
 
         List<Diary> diaries = diaryRepository.findDiaryByMemberId(memberId);
         diaries.forEach(

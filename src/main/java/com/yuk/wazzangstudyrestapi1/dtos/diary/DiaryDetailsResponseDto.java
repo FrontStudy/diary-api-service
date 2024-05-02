@@ -18,6 +18,7 @@ public class DiaryDetailsResponseDto extends DiaryResponseDto {
     private Long likeCount;
     private Boolean isLiked;
     private Boolean isBookmarked;
+    private Boolean isFollowing;
 
     private Long authorId;
     private String authorEmail;
