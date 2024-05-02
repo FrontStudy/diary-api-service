@@ -96,6 +96,25 @@ public class DiaryController {
                 .build();
     }
 
+    @GetMapping("/svc/pubDiaryDetailList")
+    public ResponseDto getPublicDiaryDetailList(@RequestParam int offset, @RequestParam int size) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = user.getUid();
+
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        DiaryListRequestDto dto = DiaryListRequestDto.builder()
+                .offset(offset)
+                .size(size)
+                .build();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getpublicDiaryDetailList(dto, pageInfo, userId))
+                .page(pageInfo)
+                .build();
+    }
+
     @PostMapping("/admin/diaryList")
     public ResponseDto getDiaryListAsAdmin(@RequestBody DiaryListAdminRequestDto dto) {
         PageInfoDto pageInfo = PageInfoDto.builder().build();

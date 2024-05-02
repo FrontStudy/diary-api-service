@@ -3,13 +3,12 @@ package com.yuk.wazzangstudyrestapi1.dtos.diary;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
 import com.yuk.wazzangstudyrestapi1.dtos.BaseTimeEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+@SuperBuilder
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,18 +20,18 @@ public class DiaryResponseDto extends BaseTimeEntity {
     private Long memberId;
     private String title;
     private String content;
-    private Long imgid;
+    private String imgUrl;
     private String accessLevel;
     private Boolean active;
     private Long readCount;
 
-    public DiaryResponseDto(LocalDateTime createdDate, LocalDateTime modifiedDate, Long id, Long memberId, String title, String content, Long imgid, String accessLevel, Boolean active) {
+    public DiaryResponseDto(LocalDateTime createdDate, LocalDateTime modifiedDate, Long id, Long memberId, String title, String content, String imgUrl, String accessLevel, Boolean active) {
         super(createdDate, modifiedDate);
         this.id = id;
         this.memberId = memberId;
         this.title = title;
         this.content = content;
-        this.imgid = imgid;
+        this.imgUrl = imgUrl;
         this.accessLevel = accessLevel;
         this.active = active;
     }
@@ -45,7 +44,7 @@ public class DiaryResponseDto extends BaseTimeEntity {
                 diary.getMemberId(),
                 diary.getTitle(),
                 diary.getContent(),
-                diary.getImgid(),
+                diary.getImgUrl(),
                 diary.getAccessLevel(),
                 diary.getActive()
         );

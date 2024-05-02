@@ -11,7 +11,7 @@ public class DiaryUpdateRequestDto {
     private Long memberId;
     private String title;
     private String content;
-    private Long imgid;
+    private String imgUrl;
     private String accessLevel;
     private Boolean active;
 }

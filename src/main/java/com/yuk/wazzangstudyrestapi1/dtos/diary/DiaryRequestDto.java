@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 public class DiaryRequestDto {
     private String title;
     private String content;
-    private Long imgid;
+    private String imgUrl;
     private String accessLevel = "private";
 }

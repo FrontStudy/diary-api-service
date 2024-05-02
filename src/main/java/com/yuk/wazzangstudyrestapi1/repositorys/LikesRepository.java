@@ -11,4 +11,6 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     void deleteLikesByDiaryIdAndMemberId(Long diaryId, Long memberId);
     void deleteByDiaryId(Long diaryId);
     void deleteAllByMemberId(Long diaryId);
+
+    Long countLikesByDiaryId(Long diaryId);
 }

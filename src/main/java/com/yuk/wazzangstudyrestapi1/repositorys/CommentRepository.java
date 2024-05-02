@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findCommentsByDiaryIdAndActiveOrderByCreatedDateDesc(Long diaryId, Boolean active);
+
+    Long countCommentsByDiaryIdAndActive(Long diaryId, Boolean active);
 }

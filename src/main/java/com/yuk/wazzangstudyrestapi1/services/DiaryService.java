@@ -1,9 +1,6 @@
 package com.yuk.wazzangstudyrestapi1.services;
 
-import com.yuk.wazzangstudyrestapi1.domains.Bookmark;
-import com.yuk.wazzangstudyrestapi1.domains.Diary;
-import com.yuk.wazzangstudyrestapi1.domains.DiaryShare;
-import com.yuk.wazzangstudyrestapi1.domains.DiaryStatistic;
+import com.yuk.wazzangstudyrestapi1.domains.*;
 import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
 import com.yuk.wazzangstudyrestapi1.dtos.diary.*;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
@@ -35,6 +32,8 @@ public class DiaryService {
     private final DiaryStatisticRepository diaryStatisticRepository;
     private final BookmarkRepository bookmarkRepository;
     private final LikesRepository likesRepository;
+    private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
 
     public Long save(DiaryRequestDto requestDto, Long memberId) {
         System.out.println("DiaryService.save");
@@ -43,7 +42,7 @@ public class DiaryService {
                     .memberId(memberId)
                     .title(requestDto.getTitle())
                     .content(requestDto.getContent())
-                    .imgid(requestDto.getImgid())
+                    .imgUrl(requestDto.getImgUrl())
                     .accessLevel(requestDto.getAccessLevel())
                     .active(true)
                     .build();
@@ -70,7 +69,7 @@ public class DiaryService {
         diary.update(
                 requestDto.getTitle() != null ? requestDto.getTitle() : diary.getTitle(),
                 requestDto.getContent() != null ? requestDto.getContent() : diary.getContent(),
-                requestDto.getImgid() != null ? requestDto.getImgid() : diary.getImgid(),
+                requestDto.getImgUrl() != null ? requestDto.getImgUrl() : diary.getImgUrl(),
                 requestDto.getAccessLevel() != null ? requestDto.getAccessLevel() : diary.getAccessLevel(),
                 requestDto.getActive() != null ? requestDto.getActive() : diary.getActive()
         );
@@ -151,6 +150,23 @@ public class DiaryService {
         }
     }
 
+    public List<DiaryDetailsResponseDto> getpublicDiaryDetailList(DiaryListRequestDto dto, PageInfoDto pageDto, Long memberId) {
+        try {
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            Page<Diary> page = diaryRepository.findAllByAccessLevelAndActiveOrderByCreatedDateDesc("public", true, pageable);
+
+            pageDto.setTotalPages((long) page.getTotalPages());
+            pageDto.setTotalElements(page.getTotalElements());
+
+            return convertPageToDetailsList(page, memberId);
+
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
     public List<DiaryResponseDto> getBookmarkedDiaryList(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
         List<Bookmark> bookmarks = bookmarkRepository.findBookmarksByMemberId(memberId);
         if(bookmarks.isEmpty()) return null;
@@ -187,6 +203,46 @@ public class DiaryService {
                     } else {
                         rDto.setReadCount(0L);
                     }
+                    return rDto;
+                })
+                .toList();
+    }
+
+    public List<DiaryDetailsResponseDto> convertPageToDetailsList(Page<Diary> page, Long memberId) {
+        return page.getContent().stream()
+                .map(diary -> {
+                    Long readCount = 0L;
+                    Optional<DiaryStatistic> optStat = diaryStatisticRepository.findDiaryStatisticByDiaryId(diary.getId());
+                    if(optStat.isPresent()) {
+                        readCount = optStat.get().getReadCount();
+                    }
+                    Long commentCount = commentRepository.countCommentsByDiaryIdAndActive(diary.getId(), true);
+                    Long likeCount = likesRepository.countLikesByDiaryId(diary.getId());
+                    Boolean isLiked = likesRepository.existsLikesByDiaryIdAndMemberId(diary.getId(), memberId);
+                    Boolean isBookmarked = bookmarkRepository.existsBookmarkByDiaryIdAndMemberId(diary.getId(), memberId);
+
+                    DiaryDetailsResponseDto rDto = DiaryDetailsResponseDto.builder()
+                            .createdDate(diary.getCreatedDate())
+                            .modifiedDate(diary.getModifiedDate())
+                            .id(diary.getId())
+                            .memberId(diary.getMemberId())
+                            .title(diary.getTitle())
+                            .content(diary.getContent())
+                            .imgUrl(diary.getImgUrl())
+                            .accessLevel(diary.getAccessLevel())
+                            .active(diary.getActive())
+                            .readCount(readCount)
+                            .commentCount(commentCount)
+                            .likeCount(likeCount)
+                            .isLiked(isLiked)
+                            .isBookmarked(isBookmarked)
+                            .build();
+
+                    Member member = memberRepository.findById(diary.getMemberId()).orElseThrow(
+                            () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
+                    );
+                    rDto.setAuthor(member);
+
                     return rDto;
                 })
                 .toList();

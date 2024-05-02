@@ -113,8 +113,11 @@ public class MemberController {
     }
 
     @GetMapping("/pub/members/{id}")
-    public MemberResponseDto findById (@PathVariable Long id) {
-        return memberService.findById(id);
+    public ResponseDto findById (@PathVariable Long id) {
+        return ResponseDto.builder()
+                .status("success")
+                .data(memberService.findById(id))
+                .build();
     }
 
     @GetMapping("/pub/check-email")

@@ -32,7 +32,7 @@ public class Diary extends BaseTimeEntity {
     @Lob
     private String content;
 
-    private Long imgid;
+    private String imgUrl;
 
     @Column(nullable = false)
     @Builder.Default
@@ -43,20 +43,20 @@ public class Diary extends BaseTimeEntity {
     private Boolean active = true;
 
     @Builder
-    public Diary(Long id, Long memberId, String title, String content, Long imgid, String accessLevel, Boolean active) {
+    public Diary(Long id, Long memberId, String title, String content, String imgUrl, String accessLevel, Boolean active) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;
         this.content = content;
-        this.imgid = imgid;
+        this.imgUrl = imgUrl;
         this.accessLevel = accessLevel;
         this.active = active;
     }
 
-    public void update(String title, String content, Long imgid, String accessLevel, Boolean active) {
+    public void update(String title, String content, String imgUrl, String accessLevel, Boolean active) {
         this.title = title;
         this.content = content;
-        this.imgid = imgid;
+        this.imgUrl = imgUrl;
         this.accessLevel = accessLevel;
         this.active = active;
     }
