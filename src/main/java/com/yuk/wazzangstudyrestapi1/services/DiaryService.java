@@ -77,6 +77,27 @@ public class DiaryService {
         return diaryId;
     }
 
+    public DiaryDetailsResponseDto getAccessibleDiaryDetailById(Long diaryId, Long memberId) {
+        try {
+            Diary diary = diaryRepository.findById(diaryId).orElseThrow(
+                    () -> new CustomException(ErrorCode.DIARY_NOT_FOUND)
+            );
+
+            if(diary.getAccessLevel().equals("public")) {
+                return convertDiaryToDetail(diary, memberId);
+            } else if (checkAccessibleToPrivateDiary(diaryId, memberId)) {
+                return convertDiaryToDetail(diary, memberId);
+            } else {
+                throw new CustomException(ErrorCode.INSUFFICIENT_PERMISSION);
+            }
+
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
     @Transactional
     public List<DiaryResponseDto> getListByMemberId(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
         try {
@@ -194,7 +215,46 @@ public class DiaryService {
         return true;
     }
 
-    public List<DiaryResponseDto> convertPageToListWithViewCount(Page<Diary> page) {
+    private DiaryDetailsResponseDto convertDiaryToDetail(Diary diary, Long memberId) {
+        Long readCount = 0L;
+        Optional<DiaryStatistic> optStat = diaryStatisticRepository.findDiaryStatisticByDiaryId(diary.getId());
+        if(optStat.isPresent()) {
+            readCount = optStat.get().getReadCount();
+        }
+        Long commentCount = commentRepository.countCommentsByDiaryIdAndActive(diary.getId(), true);
+        Long likeCount = likesRepository.countLikesByDiaryId(diary.getId());
+        Boolean isLiked = likesRepository.existsLikesByDiaryIdAndMemberId(diary.getId(), memberId);
+        Boolean isBookmarked = bookmarkRepository.existsBookmarkByDiaryIdAndMemberId(diary.getId(), memberId);
+        Boolean isFollowing = followRepository.existsFollowByFollowedIdAndFollowerId(diary.getMemberId(), memberId);
+
+        DiaryDetailsResponseDto rDto = DiaryDetailsResponseDto.builder()
+                .createdDate(diary.getCreatedDate())
+                .modifiedDate(diary.getModifiedDate())
+                .id(diary.getId())
+                .memberId(diary.getMemberId())
+                .title(diary.getTitle())
+                .content(diary.getContent())
+                .imgUrl(diary.getImgUrl())
+                .accessLevel(diary.getAccessLevel())
+                .active(diary.getActive())
+                .readCount(readCount)
+                .commentCount(commentCount)
+                .likeCount(likeCount)
+                .isLiked(isLiked)
+                .isBookmarked(isBookmarked)
+                .isFollowing(isFollowing)
+                .build();
+
+        Member member = memberRepository.findById(diary.getMemberId()).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+        rDto.setAuthor(member);
+
+        return rDto;
+
+    }
+
+    private List<DiaryResponseDto> convertPageToListWithViewCount(Page<Diary> page) {
         return page.getContent().stream()
                 .map(diary -> {
                     DiaryResponseDto rDto = DiaryResponseDto.from(diary);
@@ -209,45 +269,16 @@ public class DiaryService {
                 .toList();
     }
 
-    public List<DiaryDetailsResponseDto> convertPageToDetailsList(Page<Diary> page, Long memberId) {
+    private List<DiaryDetailsResponseDto> convertPageToDetailsList(Page<Diary> page, Long memberId) {
         return page.getContent().stream()
                 .map(diary -> {
-                    Long readCount = 0L;
-                    Optional<DiaryStatistic> optStat = diaryStatisticRepository.findDiaryStatisticByDiaryId(diary.getId());
-                    if(optStat.isPresent()) {
-                        readCount = optStat.get().getReadCount();
-                    }
-                    Long commentCount = commentRepository.countCommentsByDiaryIdAndActive(diary.getId(), true);
-                    Long likeCount = likesRepository.countLikesByDiaryId(diary.getId());
-                    Boolean isLiked = likesRepository.existsLikesByDiaryIdAndMemberId(diary.getId(), memberId);
-                    Boolean isBookmarked = bookmarkRepository.existsBookmarkByDiaryIdAndMemberId(diary.getId(), memberId);
-                    Boolean isFollowing = followRepository.existsFollowByFollowedIdAndFollowerId(diary.getMemberId(), memberId);
-
-                    DiaryDetailsResponseDto rDto = DiaryDetailsResponseDto.builder()
-                            .createdDate(diary.getCreatedDate())
-                            .modifiedDate(diary.getModifiedDate())
-                            .id(diary.getId())
-                            .memberId(diary.getMemberId())
-                            .title(diary.getTitle())
-                            .content(diary.getContent())
-                            .imgUrl(diary.getImgUrl())
-                            .accessLevel(diary.getAccessLevel())
-                            .active(diary.getActive())
-                            .readCount(readCount)
-                            .commentCount(commentCount)
-                            .likeCount(likeCount)
-                            .isLiked(isLiked)
-                            .isBookmarked(isBookmarked)
-                            .isFollowing(isFollowing)
-                            .build();
-
-                    Member member = memberRepository.findById(diary.getMemberId()).orElseThrow(
-                            () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
-                    );
-                    rDto.setAuthor(member);
-
-                    return rDto;
+                    return convertDiaryToDetail(diary, memberId);
                 })
                 .toList();
+    }
+
+    private boolean checkAccessibleToPrivateDiary(Long diaryId, Long memberId) {
+        Optional<DiaryShare> diaryShare = diaryShareRepository.findByMemberIdAndDiaryId(memberId, diaryId);
+        return diaryShare.isPresent();
     }
 }

@@ -31,7 +31,6 @@ public class DiaryController {
                 .build();
     }
 
-    // TODO : 삭제 기능 분리 필요, 일기 삭제 시 일기 관련 데이터 관리 전략 필요
     @PutMapping("/svc/diary/{diaryId}")
     public ResponseDto update(@PathVariable Long diaryId, @RequestBody DiaryUpdateRequestDto dto) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -43,6 +42,16 @@ public class DiaryController {
         return ResponseDto.builder()
                 .status("success")
                 .data(diaryService.update(diaryId, user.getUid(), dto))
+                .build();
+    }
+
+    @GetMapping("svc/diaryDetail/{diaryId}")
+    public ResponseDto getDiaryDetailById(@PathVariable Long diaryId) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getAccessibleDiaryDetailById(diaryId, user.getUid()))
                 .build();
     }
 
