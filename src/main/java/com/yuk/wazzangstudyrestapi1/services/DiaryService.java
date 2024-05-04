@@ -226,6 +226,7 @@ public class DiaryService {
         Boolean isLiked = likesRepository.existsLikesByDiaryIdAndMemberId(diary.getId(), memberId);
         Boolean isBookmarked = bookmarkRepository.existsBookmarkByDiaryIdAndMemberId(diary.getId(), memberId);
         Boolean isFollowing = followRepository.existsFollowByFollowedIdAndFollowerId(diary.getMemberId(), memberId);
+        Long authorFollowerCount = followRepository.countByFollowedId(diary.getMemberId());
 
         DiaryDetailsResponseDto rDto = DiaryDetailsResponseDto.builder()
                 .createdDate(diary.getCreatedDate())
@@ -243,6 +244,7 @@ public class DiaryService {
                 .isLiked(isLiked)
                 .isBookmarked(isBookmarked)
                 .isFollowing(isFollowing)
+                .authorFollowerCount(authorFollowerCount)
                 .build();
 
         Member member = memberRepository.findById(diary.getMemberId()).orElseThrow(
