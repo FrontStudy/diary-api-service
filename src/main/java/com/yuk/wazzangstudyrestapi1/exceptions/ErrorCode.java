@@ -20,11 +20,13 @@ public enum ErrorCode {
     SHARE_DIARY_MYSELF(BAD_REQUEST, "자신에게 일기를 공유할 수 없습니다"),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
+    INVALID_CREDENTIALS(UNAUTHORIZED, "잘못된 비밀번호입니다"),
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
     UNAUTHORIZED_MEMBER(UNAUTHORIZED, "현재 내 계정 정보가 존재하지 않습니다"),
 
     /* 403 FORBIDDEN : 권한 부족 */
     INSUFFICIENT_PERMISSION(FORBIDDEN, "해당 작업을 수행할 권한이 부족합니다"),
+    MEMBER_DISABLED(FORBIDDEN, "비활성화된 회원입니다."),
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     MEMBER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
@@ -39,8 +41,8 @@ public enum ErrorCode {
 
     /* 500 Internal Server Error */
     PERSISTENCE_ERROR(INTERNAL_SERVER_ERROR, "데이터베이스 작업 중 오류가 발생했습니다."),
-    UNKNOWN_ERROR(INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.")
-    ;
+    UNKNOWN_ERROR(INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
+
 
     private final HttpStatus httpStatus;
     private final String detail;

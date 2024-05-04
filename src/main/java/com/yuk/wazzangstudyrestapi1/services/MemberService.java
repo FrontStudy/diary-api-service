@@ -21,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
@@ -78,45 +79,46 @@ public class MemberService {
     }
 
     public LoginResultDto login(LoginRequestDto dto) {
+
+        memberRepository.findByEmailAndActive(dto.getEmail(), true).orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
         LoginResultDto rtnDto = LoginResultDto.builder().build();
-        try {
-            Authentication auth = authenticate(dto.getEmail(), EncryptUtil.encryptSHA256(dto.getPasswd()));
-            SecurityUserDetail detail = (SecurityUserDetail) auth.getPrincipal();
-            String strRoles = detail.getAuthorities().toString().replaceAll("\\s+","");
-            strRoles = strRoles.substring(1,strRoles.length()-1);
+        Authentication auth = authenticate(dto.getEmail(), EncryptUtil.encryptSHA256(dto.getPasswd()));
+        SecurityUserDetail detail = (SecurityUserDetail) auth.getPrincipal();
+        String strRoles = detail.getAuthorities().toString().replaceAll("\\s+","");
+        strRoles = strRoles.substring(1,strRoles.length()-1);
 
-            String jtoken = jwtComponent.createToken(detail.getUsername(), strRoles);
+        String jtoken = jwtComponent.createToken(detail.getUsername(), strRoles);
 
-            rtnDto.setEmail(dto.getEmail());
-            rtnDto.setJtoken(jtoken);
-            rtnDto.setUserrole(strRoles);
-            rtnDto.setId(detail.getUid());
-            rtnDto.setGender(detail.getGender());
-            rtnDto.setName(detail.getName());
-            rtnDto.setNickname(detail.getNickname());
-            rtnDto.setBirthDate(detail.getBirthDate());
-            rtnDto.setProfilePicture(detail.getProfilePicture());
+        rtnDto.setEmail(dto.getEmail());
+        rtnDto.setJtoken(jtoken);
+        rtnDto.setUserrole(strRoles);
+        rtnDto.setId(detail.getUid());
+        rtnDto.setGender(detail.getGender());
+        rtnDto.setName(detail.getName());
+        rtnDto.setNickname(detail.getNickname());
+        rtnDto.setBirthDate(detail.getBirthDate());
+        rtnDto.setProfilePicture(detail.getProfilePicture());
 
-            updateUserToken(detail.getUid(),jtoken);
+        updateUserToken(detail.getUid(),jtoken);
 
-            return rtnDto;
-        } catch (Exception e) {
-            return null;
-        }
+        return rtnDto;
     }
 
-    private Authentication authenticate(String username, String password) throws Exception {
+    private Authentication authenticate(String username, String password) {
         try {
             return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            System.out.println("user disabled");
-            throw new Exception("USER_DISABLED", e);
+            throw new CustomException(ErrorCode.MEMBER_DISABLED);
+        } catch (UsernameNotFoundException e) {
+            System.out.println("invalid email");
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
         } catch (BadCredentialsException e) {
             System.out.println("invalid credentials");
-            throw new Exception("INVALID_CREDENTIALS", e);
+            throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
         } catch (Exception e) {
             System.out.println("Exception e : "+e);
-            throw new Exception("Unknown Exception", e);
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
         }
     }
 
