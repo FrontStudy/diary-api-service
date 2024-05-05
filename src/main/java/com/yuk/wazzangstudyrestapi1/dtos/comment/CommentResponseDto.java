@@ -16,6 +16,8 @@ public class CommentResponseDto extends BaseTimeEntity {
 
     private Long id;
     private Long memberId;
+    private String nickname;
+    private String profilePicture;
     private Long diaryId;
     private String content;
     private Boolean active = true;

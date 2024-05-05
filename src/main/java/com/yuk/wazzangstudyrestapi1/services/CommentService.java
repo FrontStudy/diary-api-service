@@ -3,6 +3,7 @@ package com.yuk.wazzangstudyrestapi1.services;
 import com.yuk.wazzangstudyrestapi1.domains.Comment;
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
 import com.yuk.wazzangstudyrestapi1.domains.DiaryShare;
+import com.yuk.wazzangstudyrestapi1.domains.Member;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentResponseDto;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
@@ -10,6 +11,7 @@ import com.yuk.wazzangstudyrestapi1.exceptions.ErrorCode;
 import com.yuk.wazzangstudyrestapi1.repositorys.CommentRepository;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryRepository;
 import com.yuk.wazzangstudyrestapi1.repositorys.DiaryShareRepository;
+import com.yuk.wazzangstudyrestapi1.repositorys.MemberRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +30,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final DiaryRepository diaryRepository;
     private final DiaryShareRepository diaryShareRepository;
+    private final MemberRepository memberRepository;
 
     public Long save(CommentRequestDto dto, Long uid) {
 
@@ -57,11 +61,7 @@ public class CommentService {
             throw new CustomException(ErrorCode.INSUFFICIENT_PERMISSION);
         }
 
-        List<Comment> comments = commentRepository.findCommentsByDiaryIdAndActiveOrderByCreatedDateDesc(diaryId, true);
-
-        return comments.stream()
-                .map(CommentResponseDto::from)
-                .collect(Collectors.toList());
+        return getCommentsForDiary(diaryId);
     }
 
     public List<CommentResponseDto> getCommentsByPrivateDiary(Long memberId, Long diaryId) {
@@ -96,8 +96,19 @@ public class CommentService {
 
     private List<CommentResponseDto> getCommentsForDiary(Long diaryId) {
         List<Comment> comments = commentRepository.findCommentsByDiaryIdAndActiveOrderByCreatedDateDesc(diaryId, true);
-        return comments.stream()
-                .map(CommentResponseDto::from)
-                .collect(Collectors.toList());
+        List<CommentResponseDto> rDtos = comments.stream()
+                .map((comment) -> {
+                    CommentResponseDto rdto = CommentResponseDto.from(comment);
+                    Optional<Member> author = memberRepository.findByIdAndActive(comment.getMemberId(), true);
+                    if(author.isEmpty()) {
+                        return null;
+                    } else {
+                        rdto.setNickname(author.get().getNickname());
+                        rdto.setProfilePicture(author.get().getProfilePicture());
+                        return rdto;
+                    }
+                }).filter((Objects::nonNull))
+                .toList();
+        return rDtos;
     }
 }
