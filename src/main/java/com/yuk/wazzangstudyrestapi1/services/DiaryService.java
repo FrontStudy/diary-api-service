@@ -155,6 +155,24 @@ public class DiaryService {
         }
     }
 
+    public List<DiaryDetailAdminResponseDto> getDetailListAsAdmin(DiaryListAdminRequestDto dto, PageInfoDto pageDto) {
+        try {
+            Specification<Diary> spec = DiarySpecifications.withDiaryListAdminRequestDto(dto);
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize(), Sort.by("createdDate").descending());
+            Page<Diary> page = diaryRepository.findAll(spec, pageable);
+
+            pageDto.setTotalPages((long) page.getTotalPages());
+            pageDto.setTotalElements(page.getTotalElements());
+
+            return convertPageToDetailsListAsAdmin(page);
+
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
     public List<DiaryResponseDto> getpublicDiaryList(DiaryListRequestDto dto, PageInfoDto pageDto) {
         try {
             Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
@@ -256,6 +274,41 @@ public class DiaryService {
 
     }
 
+    private DiaryDetailAdminResponseDto convertDiaryToDetailAsAdmin(Diary diary) {
+        Long readCount = 0L;
+        Optional<DiaryStatistic> optStat = diaryStatisticRepository.findDiaryStatisticByDiaryId(diary.getId());
+        if(optStat.isPresent()) {
+            readCount = optStat.get().getReadCount();
+        }
+        Long commentCount = commentRepository.countCommentsByDiaryIdAndActive(diary.getId(), true);
+        Long likeCount = likesRepository.countLikesByDiaryId(diary.getId());
+        Long authorFollowerCount = followRepository.countByFollowedId(diary.getMemberId());
+
+        DiaryDetailAdminResponseDto rDto = DiaryDetailAdminResponseDto.builder()
+                .createdDate(diary.getCreatedDate())
+                .modifiedDate(diary.getModifiedDate())
+                .id(diary.getId())
+                .memberId(diary.getMemberId())
+                .title(diary.getTitle())
+                .content(diary.getContent())
+                .imgUrl(diary.getImgUrl())
+                .accessLevel(diary.getAccessLevel())
+                .active(diary.getActive())
+                .readCount(readCount)
+                .commentCount(commentCount)
+                .likeCount(likeCount)
+                .authorFollowerCount(authorFollowerCount)
+                .build();
+
+        Member member = memberRepository.findById(diary.getMemberId()).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+        rDto.setAuthor(member);
+
+        return rDto;
+
+    }
+
     private List<DiaryResponseDto> convertPageToListWithViewCount(Page<Diary> page) {
         return page.getContent().stream()
                 .map(diary -> {
@@ -276,6 +329,12 @@ public class DiaryService {
                 .map(diary -> {
                     return convertDiaryToDetail(diary, memberId);
                 })
+                .toList();
+    }
+
+    private List<DiaryDetailAdminResponseDto> convertPageToDetailsListAsAdmin(Page<Diary> page) {
+        return page.getContent().stream()
+                .map(this::convertDiaryToDetailAsAdmin)
                 .toList();
     }
 

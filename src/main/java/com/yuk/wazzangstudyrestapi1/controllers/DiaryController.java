@@ -135,6 +135,17 @@ public class DiaryController {
                 .build();
     }
 
+    @PostMapping("/admin/diaryDetailList")
+    public ResponseDto getDiaryDetailListAsAdmin(@RequestBody DiaryListAdminRequestDto dto) {
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getDetailListAsAdmin(dto, pageInfo))
+                .page(pageInfo)
+                .build();
+    }
+
 
     @GetMapping("svc/member/me/bookmark/diary")
     public ResponseDto getBookmarkDiaries(@RequestParam int offset, @RequestParam int size) {
