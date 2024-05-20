@@ -106,7 +106,7 @@ public class DiaryController {
     }
 
     @GetMapping("/svc/pubDiaryDetailList")
-    public ResponseDto getPublicDiaryDetailList(@RequestParam int offset, @RequestParam int size) {
+    public ResponseDto getPublicDiaryDetailList(@RequestParam int offset, @RequestParam int size, @RequestParam(required = false, defaultValue = "latest") String sort) {
         SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = user.getUid();
 
@@ -115,6 +115,7 @@ public class DiaryController {
         DiaryListRequestDto dto = DiaryListRequestDto.builder()
                 .offset(offset)
                 .size(size)
+                .sort(sort)
                 .build();
 
         return ResponseDto.builder()

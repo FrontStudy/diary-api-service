@@ -10,4 +10,5 @@ import lombok.Data;
 public class DiaryListRequestDto {
     private int offset;
     private int size;
+    private String sort;
 }

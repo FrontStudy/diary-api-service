@@ -4,6 +4,7 @@ import com.yuk.wazzangstudyrestapi1.domains.Comment;
 import com.yuk.wazzangstudyrestapi1.domains.Diary;
 import com.yuk.wazzangstudyrestapi1.domains.DiaryShare;
 import com.yuk.wazzangstudyrestapi1.domains.Member;
+import com.yuk.wazzangstudyrestapi1.dtos.PageInfoDto;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentRequestDto;
 import com.yuk.wazzangstudyrestapi1.dtos.comment.CommentResponseDto;
 import com.yuk.wazzangstudyrestapi1.exceptions.CustomException;
@@ -16,12 +17,13 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.PersistenceException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class CommentService {
         }
     }
 
-    public List<CommentResponseDto> getCommentByPubDiary(Long diaryId) {
+    public List<CommentResponseDto> getCommentByPubDiary(Long diaryId, PageInfoDto pageInfo, Pageable pageable) {
         Diary diary = diaryRepository.findByIdAndActive(diaryId, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
 
@@ -61,16 +63,16 @@ public class CommentService {
             throw new CustomException(ErrorCode.INSUFFICIENT_PERMISSION);
         }
 
-        return getCommentsForDiary(diaryId);
+        return getCommentsForDiary(diaryId, pageInfo, pageable);
     }
 
-    public List<CommentResponseDto> getCommentsByPrivateDiary(Long memberId, Long diaryId) {
+    public List<CommentResponseDto> getCommentsByPrivateDiary(Long memberId, Long diaryId, PageInfoDto pageInfo, Pageable pageable) {
         Diary diary = diaryRepository.findByIdAndActive(diaryId, true)
                 .orElseThrow(() -> new CustomException(ErrorCode.DIARY_NOT_FOUND));
 
         // 공개 다이어리이거나, 다이어리 소유자이거나, 공유받은 다이어리인 경우
         if (isPublicDiary(diary) || isDiaryOwner(diary, memberId) || isSharedDiary(diary, memberId)) {
-            return getCommentsForDiary(diaryId);
+            return getCommentsForDiary(diaryId, pageInfo, pageable);
         }
 
         // 위 조건에 모두 해당하지 않는 경우, 권한이 없는 것으로 판단
@@ -94,8 +96,12 @@ public class CommentService {
         return false;
     }
 
-    private List<CommentResponseDto> getCommentsForDiary(Long diaryId) {
-        List<Comment> comments = commentRepository.findCommentsByDiaryIdAndActiveOrderByCreatedDateDesc(diaryId, true);
+    private List<CommentResponseDto> getCommentsForDiary(Long diaryId, PageInfoDto pageInfo, Pageable pageable) {
+        Page<Comment> comments = commentRepository.findCommentsByDiaryIdAndActiveOrderByCreatedDateDesc(diaryId, true, pageable);
+
+        pageInfo.setTotalPages((long) comments.getTotalPages());
+        pageInfo.setTotalElements(comments.getTotalElements());
+
         List<CommentResponseDto> rDtos = comments.stream()
                 .map((comment) -> {
                     CommentResponseDto rdto = CommentResponseDto.from(comment);

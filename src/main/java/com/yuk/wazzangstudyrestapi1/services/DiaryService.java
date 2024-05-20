@@ -193,7 +193,15 @@ public class DiaryService {
     public List<DiaryDetailsResponseDto> getpublicDiaryDetailList(DiaryListRequestDto dto, PageInfoDto pageDto, Long memberId) {
         try {
             Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
-            Page<Diary> page = diaryRepository.findAllByAccessLevelAndActiveOrderByCreatedDateDesc("public", true, pageable);
+            String sort = dto.getSort();
+            System.out.println("sort : " +sort);
+            Page<Diary> page = switch (sort.toLowerCase()) {
+                case "likes" -> diaryRepository.findAllByAccessLevelAndActiveOrderByLikes("public", true, pageable);
+                case "popular" -> diaryRepository.findAllByAccessLevelAndActiveWithStatistic("public", true, pageable);
+                case "date" -> diaryRepository.findAllByAccessLevelAndActive("public", true, pageable);
+                default ->
+                        diaryRepository.findAllByAccessLevelAndActiveOrderByCreatedDateDesc("public", true, pageable);
+            };
 
             pageDto.setTotalPages((long) page.getTotalPages());
             pageDto.setTotalElements(page.getTotalElements());
