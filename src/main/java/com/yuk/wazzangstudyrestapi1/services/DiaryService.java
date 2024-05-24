@@ -138,6 +138,28 @@ public class DiaryService {
         }
     }
 
+    public List<DiaryDetailsResponseDto> getSharedDiaryDetailListByMemberId(Long memberId, DiaryListRequestDto dto, PageInfoDto pageDto) {
+        try {
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize(), Sort.by("createdDate").descending());
+            List<DiaryShare> diaryShares = diaryShareRepository.findAllByMemberId(memberId);
+            List<Long> diaryIds = diaryShares.stream().map(
+                    DiaryShare::getDiaryId
+            ).toList();
+
+            Page<Diary> diaries = diaryRepository.findAllByIdInOrderByCreatedDateDesc(diaryIds, pageable);
+
+            pageDto.setTotalPages((long) diaries.getTotalPages());
+            pageDto.setTotalElements(diaries.getTotalElements());
+
+            return convertPageToDetailsList(diaries, memberId);
+
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
+
     public List<DiaryResponseDto> getListAsAdmin(DiaryListAdminRequestDto dto, PageInfoDto pageDto) {
         try {
             Specification<Diary> spec = DiarySpecifications.withDiaryListAdminRequestDto(dto);
