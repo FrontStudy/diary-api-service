@@ -225,6 +225,8 @@ public class MemberService {
         Long followerCnt = followRepository.countByFollowedId(id);
         Long followingCnt = followRepository.countByFollowerId(id);
 
+        System.out.println("follower : " + followerCnt.toString());
+
         return MemberDetailInfoDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
