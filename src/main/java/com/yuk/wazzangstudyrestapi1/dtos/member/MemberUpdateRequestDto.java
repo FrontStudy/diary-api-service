@@ -10,4 +10,6 @@ import lombok.Setter;
 public class MemberUpdateRequestDto {
     private String profilePicture;
     private String nickname;
+    private String name;
+    private String birthDate;
 }

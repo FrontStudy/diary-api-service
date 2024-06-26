@@ -138,7 +138,9 @@ public class MemberService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
         member.update(
                 requestDto.getProfilePicture() != null ? requestDto.getProfilePicture() : member.getProfilePicture(),
-                requestDto.getNickname() != null ? requestDto.getNickname() : member.getNickname()
+                requestDto.getNickname() != null ? requestDto.getNickname() : member.getNickname(),
+                requestDto.getName() != null ? requestDto.getName() : member.getName(),
+                requestDto.getBirthDate() != null ? requestDto.getBirthDate() : member.getBirthDate()
         );
 
         return id;
