@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecificationExecutor<Diary> {
 
     List<Diary> findDiaryByMemberId(Long memberId);
+    Long countByActiveAndMemberId(Boolean active, Long memberId);
 
     Page<Diary> findAllByMemberIdOrderByCreatedDateDesc(Long memberId, Pageable pageable);
     Page<Diary> findAllByIdInOrderByCreatedDateDesc(List<Long> id, Pageable pageable);

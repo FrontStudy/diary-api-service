@@ -156,4 +156,14 @@ public class MemberController {
                 .data(memberService.deactivate(id))
                 .build();
     }
+
+    @GetMapping("/svc/member/me/detailInfo")
+    public ResponseDto getDetailInfo() {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(memberService.getDetailInfo(user.getUid()))
+                .build();
+    }
 }

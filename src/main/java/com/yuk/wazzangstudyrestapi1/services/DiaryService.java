@@ -274,7 +274,7 @@ public class DiaryService {
         Boolean isLiked = likesRepository.existsLikesByDiaryIdAndMemberId(diary.getId(), memberId);
         Boolean isBookmarked = bookmarkRepository.existsBookmarkByDiaryIdAndMemberId(diary.getId(), memberId);
         Boolean isFollowing = followRepository.existsFollowByFollowedIdAndFollowerId(diary.getMemberId(), memberId);
-        Long authorFollowerCount = followRepository.countByFollowedId(diary.getMemberId());
+        Long authorFollowerCount = followRepository.countByFollowerId(diary.getMemberId());
 
         DiaryDetailsResponseDto rDto = DiaryDetailsResponseDto.builder()
                 .createdDate(diary.getCreatedDate())
@@ -312,7 +312,7 @@ public class DiaryService {
         }
         Long commentCount = commentRepository.countCommentsByDiaryIdAndActive(diary.getId(), true);
         Long likeCount = likesRepository.countLikesByDiaryId(diary.getId());
-        Long authorFollowerCount = followRepository.countByFollowedId(diary.getMemberId());
+        Long authorFollowerCount = followRepository.countByFollowerId(diary.getMemberId());
 
         DiaryDetailAdminResponseDto rDto = DiaryDetailAdminResponseDto.builder()
                 .createdDate(diary.getCreatedDate())

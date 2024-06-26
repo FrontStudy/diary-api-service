@@ -216,4 +216,27 @@ public class MemberService {
         );
         return true;
     }
+
+    public MemberDetailInfoDto getDetailInfo(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Long diariesCnt = diaryRepository.countByActiveAndMemberId(true, id);
+        Long followerCnt = followRepository.countByFollowedId(id);
+        Long followingCnt = followRepository.countByFollowerId(id);
+
+        return MemberDetailInfoDto.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .profilePicture(member.getProfilePicture())
+                .nickname(member.getNickname())
+                .name(member.getName())
+                .birthDate(member.getBirthDate())
+                .gender(member.getGender())
+                .diaryCount(diariesCnt)
+                .followerCount(followerCnt)
+                .followingCount(followingCnt)
+                .build();
+
+    }
 }
