@@ -372,4 +372,27 @@ public class DiaryService {
         Optional<DiaryShare> diaryShare = diaryShareRepository.findByMemberIdAndDiaryId(memberId, diaryId);
         return diaryShare.isPresent();
     }
+
+    public List<DiaryDetailsResponseDto> getMyDiaryList(DiaryListRequestDto dto, PageInfoDto pageDto, Long memberId) {
+        try {
+            Pageable pageable = PageRequest.of(dto.getOffset(), dto.getSize());
+            String sort = dto.getSort();
+            System.out.println("sort : " +sort);
+            Page<Diary> page = switch (sort.toLowerCase()) {
+                case "likes" -> diaryRepository.findAllByMemberIdAndActiveOrderByLikes(memberId,true, pageable);
+                case "popular" -> diaryRepository.findAllByMemberIDAndActiveWithStatistic(memberId,true, pageable);
+                default -> diaryRepository.findAllByMemberIdAndActive(memberId, true, pageable);
+            };
+
+            pageDto.setTotalPages((long) page.getTotalPages());
+            pageDto.setTotalElements(page.getTotalElements());
+
+            return convertPageToDetailsList(page, memberId);
+
+        } catch (PersistenceException e) {
+            throw new CustomException(ErrorCode.PERSISTENCE_ERROR);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.UNKNOWN_ERROR);
+        }
+    }
 }

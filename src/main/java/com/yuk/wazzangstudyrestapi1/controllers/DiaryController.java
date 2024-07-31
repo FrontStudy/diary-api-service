@@ -185,4 +185,24 @@ public class DiaryController {
                 .build();
 
     }
+
+    @GetMapping("svc/member/me/popular/diary")
+    public ResponseDto getMyPopularDiaries(@RequestParam int offset, @RequestParam int size) {
+        SecurityUserDetail user = (SecurityUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = user.getUid();
+
+        PageInfoDto pageInfo = PageInfoDto.builder().build();
+
+        DiaryListRequestDto dto = DiaryListRequestDto.builder()
+                .offset(offset)
+                .size(size)
+                .sort("likes")
+                .build();
+
+        return ResponseDto.builder()
+                .status("success")
+                .data(diaryService.getMyDiaryList(dto, pageInfo, userId))
+                .build();
+
+    }
 }

@@ -46,6 +46,20 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecific
     Page<Diary> findAllByAccessLevelAndActiveWithStatistic(String accessLevel, Boolean active, Pageable pageable);
 
     @Query(
+            value = "SELECT d.*, COALESCE(s.read_count, 0) AS read_count " +
+                    "FROM diary d " +
+                    "LEFT JOIN diary_statistic s ON d.id = s.diary_id " +
+                    "WHERE d.member_id = :memberId AND d.active = :active " +
+                    "ORDER BY COALESCE(s.read_count, 0) DESC, d.created_date DESC",
+            countQuery = "SELECT COUNT(d.id) " +
+                    "FROM diary d " +
+                    "LEFT JOIN diary_statistic s ON d.id = s.diary_id " +
+                    "WHERE d.member_id = :authorId AND d.active = :active",
+            nativeQuery = true
+    )
+    Page<Diary> findAllByMemberIDAndActiveWithStatistic(@Param("memberId") Long memberId, @Param("active") Boolean active, Pageable pageable);
+
+    @Query(
             value = "SELECT d.* " +
                     "FROM diary d " +
                     "LEFT JOIN (SELECT diary_id, COUNT(*) as like_count FROM likes GROUP BY diary_id) l " +
@@ -60,4 +74,24 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, JpaSpecific
             nativeQuery = true
     )
     Page<Diary> findAllByAccessLevelAndActiveOrderByLikes(@Param("accessLevel") String accessLevel, @Param("active") Boolean active, Pageable pageable);
+
+    @Query(
+            value = "SELECT d.* " +
+                    "FROM diary d " +
+                    "LEFT JOIN (SELECT diary_id, COUNT(*) as like_count FROM likes GROUP BY diary_id) l " +
+                    "ON d.id = l.diary_id " +
+                    "WHERE d.member_id = :memberId AND d.active = :active " +
+                    "ORDER BY l.like_count DESC, d.created_date DESC",
+            countQuery = "SELECT COUNT(d.id) " +
+                    "FROM diary d " +
+                    "LEFT JOIN (SELECT diary_id, COUNT(*) as like_count FROM likes GROUP BY diary_id) l " +
+                    "ON d.id = l.diary_id " +
+                    "WHERE d.member_id = :memberId AND d.active = :active",
+            nativeQuery = true
+    )
+    Page<Diary> findAllByMemberIdAndActiveOrderByLikes(@Param("memberId") Long memberId, @Param("active") Boolean active, Pageable pageable);
+
+    Page<Diary> findAllByMemberIdAndActive(Long memberId, boolean b, Pageable pageable);
 }
+
+
