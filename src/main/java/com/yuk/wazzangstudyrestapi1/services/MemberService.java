@@ -243,4 +243,11 @@ public class MemberService {
                 .build();
 
     }
+
+    public Long getMemberIdByEmail(String email) {
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return member.getId();
+    }
 }

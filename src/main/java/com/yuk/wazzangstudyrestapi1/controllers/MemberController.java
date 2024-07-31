@@ -166,4 +166,13 @@ public class MemberController {
                 .data(memberService.getDetailInfo(user.getUid()))
                 .build();
     }
+
+    @GetMapping("/pub/memberId")
+    public ResponseDto getMemberIdByEmail(@RequestParam(name = "email") String email) {
+        Long memberId = memberService.getMemberIdByEmail(email);
+        return ResponseDto.builder()
+                .status("success")
+                .data(memberId)
+                .build();
+    }
 }
